@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title> Moral Imagination </title>
+
+<head>
+  <title> Moral Imagination </title>
 
   <!-- Load jsPsych, plugins and jQuery from CDNs so the experiment can run locally without local jsPsych folders -->
   <!-- Core jsPsych CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/jspsych@6.3.1/css/jspsych.css" rel="stylesheet" type="text/css">
+  <link href="https://cdn.jsdelivr.net/npm/jspsych@8.2.3/css/jspsych.css" rel="stylesheet" type="text/css">
 
   <!-- Optional project CSS (if you have them locally, move to /css/ and update paths) -->
   <!-- <link rel='stylesheet' type='text/css' href='jsPsych/css/default_style.css'> -->
@@ -15,1155 +16,1175 @@
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 
   <!-- jsPsych core -->
-  <script src="https://cdn.jsdelivr.net/npm/jspsych@6.3.1/jspsych.js"></script>
+  <script src="https://unpkg.com/jspsych@8.2.3"></script>
 
   <!-- jsPsych plugins (from the same release) -->
-  <script src="https://cdn.jsdelivr.net/npm/jspsych@6.3.1/plugins/jspsych-html-keyboard-response.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspsych@6.3.1/plugins/jspsych-html-button-response.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspsych@6.3.1/plugins/jspsych-fullscreen.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspsych@6.3.1/plugins/jspsych-image-keyboard-response.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspsych@6.3.1/plugins/jspsych-instructions.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspsych@6.3.1/plugins/jspsych-survey-multi-choice.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspsych@6.3.1/plugins/jspsych-survey-text.js"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-fullscreen@2.1.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@2.1.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-instructions@2.1.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@2.2.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-survey-text@2.1.0"></script>
   <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
-  
-  
+
+
 
   <!-- Note: jspsych-pavlovia integration is optional. If you need pavlovia syncing, add the plugin file or change these guards below. -->
-      
 
-  </head>
+
+</head>
+
 <body>
   <script>
 
-  const subject_id = jsPsych.randomization.randomID(10);
-  const filename = `${subject_id}.csv`;
-            
+    var jsPsych = initJsPsych({
+      use_webaudio: false,
+    });
 
-///last changes made by Charlotte 10 March 
-///////////////////////////////////////////////////////
-/* create timeline, set up, & link to pavlovia */
+    const subject_id = jsPsych.randomization.randomID(10);
+    const filename = `${subject_id}.csv`;
 
-var surveyCode = jsPsych.data.getURLVariable('participant');
-if (!surveyCode) {
-    surveyCode = 'test'
-}
-console.log(surveyCode)
 
-function getBrowserId () {
+    ///last changes made by Charlotte 10 March 
+    ///////////////////////////////////////////////////////
+    /* create timeline, set up, & link to pavlovia */
+
+    var surveyCode = jsPsych.data.getURLVariable('participant');
+    if (!surveyCode) {
+      surveyCode = 'test'
+    }
+    console.log(surveyCode)
+
+    function getBrowserId() {
       var browsers = ["MSIE", "Firefox", "Safari", "Chrome", "Opera"];
       sUsrAg = window.navigator.userAgent,
-      nIdx = browsers.length - 1;
-      for (nIdx; nIdx > -1 && sUsrAg.indexOf(browsers [nIdx]) === -1; nIdx--);
-   
-    return browsers[nIdx];
-  }
+        nIdx = browsers.length - 1;
+      for (nIdx; nIdx > -1 && sUsrAg.indexOf(browsers[nIdx]) === -1; nIdx--);
 
-var OS = window.navigator.platform;
-var browser = getBrowserId();
-
-var pavloviaInfo;
-
-var tl = []; //timeline initialized empty
-
-/* init connection with pavlovia.org */
-// Only add pavlovia-init to the timeline if the pavlovia plugin is available.
-if (typeof jsPsych !== 'undefined' && jsPsych.plugins && jsPsych.plugins.pavlovia) {
-  var pavlovia_init = {
-    type: "pavlovia",
-    command: "init",
-    // Store info received by Pavlovia init into the global variable `pavloviaInfo`
-    setPavloviaInfo: function (info) {
-      console.log(info);
-      pavloviaInfo = info;
+      return browsers[nIdx];
     }
-  };
-  tl.push(pavlovia_init);
-} else {
-  console.log('Pavlovia plugin not found — skipping pavlovia init.');
-}
 
-/////////////////////////////////////////////////////
-/* define the welcome & consent information */
-var researcher_name = "Dr. Jordan Wylie" 
-var researcher_email = "Jordan.Wylie@cornell.edu" //
-var time_required = "25-30"
+    var OS = window.navigator.platform;
+    var browser = getBrowserId();
 
-var welcome = {
-  type: "html-keyboard-response",
-  stimulus: "Welcome to our experiment! Please turn off any music or television, and put your phone on silent. This experiment will take about '+time_required+' minutes." +
-  "<p>Press the SPACE BAR to begin.</p>",
-  choices: [' '],
-};
-tl.push(welcome);
+    var pavloviaInfo;
 
-var consentform = {
-    type: 'html-button-response',
-    stimulus: '<p>Please read the following and press the button at the bottom of the screen to begin.</p><p></p>' + 
-    '<p><h1><strong>CONSENT FORM</strong></h1></p><p></p>' + 
-    '<div align=left>' +
-    '<p><strong>Project Summary:</strong><br />You are invited to participate in a research study conducted by Principal Investigator '+researcher_name+' Amsterdam Business School, University of Amsterdam, Netherlands in collaboration with a team of international researchers. Through this study, we hope to gain a better understanding of how some habits of thought interrelate.</p>' + 
-    '<p><strong>Eligibility Criteria. To Participate you must: </strong><br />Be at least 17 years of age AND be a fluent/native English speaker.</p>' + 
-    '<p><strong>What is involved?</strong><br />You will be asked to complete a number of questionnaires, as follows: </p>' + 
-    '<p> - You will be asked to read a number of short descriptions of hypothetical scenarios. Afterwards, you will read descriptions of potential actions people may undertake in those situations. Your job is to indicate whether you think those actions are possible or not.' + 
-    '<p> - You will be asked to answer a few questions about some of your thinking habits.' + 
-    '<p> - You will be asked to answer a few questions about the kind of situations you like or dislike.' + 
-    '<p> - You will be asked to answer a few questions about creativity.' + 
-    '<p><strong>How much of my time will I need to give?</strong><br />The total experiment will take roughly '+time_required+' minutes.</p>' + 
-    '<p><strong>Compensation:</strong><br />You will receive .25 course credit for your participation, which will be deposited into your lab account. Participation is voluntary and you may withdraw from the survey at any time by closing the browser window. You can withdraw with remuneration by clicking through the study to the end. Note that we have embedded several attention checks in the survey. Please try and stay attentive for the duration of the study. You may decline to answer any other questions that you prefer not to answer by leaving them blank. The risks of participation are no greater than what you experience day to day. There are no direct benefits to participation in this study.  </p>' + 
-    '<p><strong>Confidentiality & Data Storage:</strong><br />TYour identity will remain completely confidential. Because we are interested in the average responses of the entire group of participants, you will not be individually identified; additionally, you will be identified with a meaningless participant ID number only. The data collected from this study will be maintained on a password-protected computer in a restricted access area at University of Amsterdam, to which only the authorized researchers (dr. Gijs van Houwelingen) will have access for at least 7 years. De-identified data related to your participation may be submitted to an open access repository or journal (i.e., the data may be publicly available). These data will be completely de-identified/anonymized prior to submission by removing all personally identifying information (any identifying demographic information) before submission and will be presented in aggregate form in publications. This process is integral to the research process as it allows other researchers to verify results and avoid duplicating research. Other individuals may access these data by accessing the open access repository. Although the dataset without identifiers may be shared publicly, your identity will always remain confidential. </p>' + 
-    '<p>This survey uses Pavlovia, a type of online survey software. When information is transmitted over the Internet privacy cannot be guaranteed. There is always a risk your responses may be intercepted by a third party (e.g., government agencies, hackers). Pavlovia may temporarily collect machine identifiers (i.e., IP addresses) to avoid duplicate responses in the dataset but will not collect information that could identify you personally. If you prefer not to provide your data using this program, please do not participate in this study. If you have any comments or concerns during the study or at a later date, please do not hesitate to contact dr. Gijs van Houwelingen at g.g.vanhouwelingen@uva.nl.</p>' + 
-    "<p><strong>Ethics Review:</strong><br />This study has been reviewed and received ethics clearance through the Ethics Committee Economics and Business (EBEC), University of Amsterdam, under number EC 20210510030544. If you have questions for the Committee contact them at (31)20-5255311 or at secbs-abs@uva.nl. </p>" + 
-    "<p>By indicating your consent, you are not waiving your legal rights or releasing the investigator or involved institution from their legal and professional responsibilities.</p>" + 
-    '<p><strong>Thank you for considering participation in this study.</strong><br />Please contact '+researcher_name+' at '+researcher_email+', if further information is required.</p>' + 
-    '</div><p></p>',
-    choices: ['I CONSENT TO PARTICIPATE IN THIS STUDY'],
-    prompt: "<p><small>Click this button to continue, or close this page to exit.</small></p><p></p>",
-    data: {stimulus: 'consentform'},
-};
-tl.push(consentform);
+    var tl = []; //timeline initialized empty
 
+    /* init connection with pavlovia.org */
+    // Only add pavlovia-init to the timeline if the pavlovia plugin is available.
+    // if (typeof jsPsych !== 'undefined' && jsPsych.plugins && jsPsych.plugins.pavlovia) {
+    //   var pavlovia_init = {
+    //     type: "pavlovia",
+    //     command: "init",
+    //     // Store info received by Pavlovia init into the global variable `pavloviaInfo`
+    //     setPavloviaInfo: function (info) {
+    //       console.log(info);
+    //       pavloviaInfo = info;
+    //     }
+    //   };
+    //   tl.push(pavlovia_init);
+    // } else {
+    //   console.log('Pavlovia plugin not found — skipping pavlovia init.');
+    // }
 
-tl.push({
-  type: 'fullscreen',
-  message: '<div class="instructions"><p>Thank you for agreeing to participate.</p><p>Press the button below to begin in full screen mode.</p></div>',
-  fullscreen_mode: true
-});
-    
-var fixation = {
-  type: 'html-keyboard-response',
-  stimulus: '<div class="rsvp">+</div>',
-  choices: jsPsych.NO_KEYS,
-  trial_duration: 2000,
-  data: {test_part: 'fixation'},
-  }
+    /////////////////////////////////////////////////////
+    /* define the welcome & consent information */
+    var researcher_name = "Dr. Jordan Wylie"
+    var researcher_email = "Jordan.Wylie@cornell.edu" //
+    var time_required = "25-30"
 
-/////////////////////////////////////////////////////
-/* define the SCENARIOS */
-var scenario_stimuli1 = ["A person goes to a grocery store. They see an elderly dog lying on its side and ask a clerk how long it has been there. It has been lying there all day. "];
-var scenario_stimuli2 = ["A person and their daughter are shopping in a toy store at the mall. They find a wallet that has money and receipts in it."];
-var scenario_stimuli3 = ["The day after a person marries their husband, his previous girlfriend comes to their house and drops off their three-month-old son. The married couple did not see her again for eleven years."];
-var scenario_stimuli4 = ["A person&#180;s mom falls and hurts herself badly."];
-var scenario_stimuli5 = ["A person is friends with a woman who wants to pursue an acting career. She is going to pawn this ring that was in her family for years. They do not want her to pawn the ring."];
+    var welcome = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "Welcome to our experiment! Please turn off any music or television, and put your phone on silent. This experiment will take about '+time_required+' minutes." +
+        "<p>Press the SPACE BAR to begin.</p>",
+      choices: [' '],
+    };
+    tl.push(welcome);
 
-var scenario_pract1 = ["Possible"];
-var scenario_pract2 = ["Possible"];
-var scenario_pract3 = ["Impossible"];
-var scenario_pract4 = ["Impossible"];
-var scenario_pract5 = ["Impossible"];
-
-/* Adding all the scenarios to an array, we will loop through this array*/
-var practice = [scenario_pract1, scenario_pract2, scenario_pract3, scenario_pract4, scenario_pract5]
-
-var scenarios = [scenario_stimuli1, scenario_stimuli2, scenario_stimuli3, scenario_stimuli4, scenario_stimuli5];
-
-/* define the OPTIONS */
-
-// Areli CHECK HERE 
-var options1 = jsPsych.randomization.shuffle([
-  { option: "Walks past the dog",  data: { type: 'Ordinary',  correct_response: 'f'} },
-  { option: "Avoids looking at the dog",  data: { type: 'Ordinary',  correct_response: 'f'} },
-  { option: "Stares at the dog",  data: { type: 'Ordinary',  correct_response: 'f'} },
-  { option: "Assumes the dog is okay",  data: { type: 'Ordinary',  correct_response: 'f'} },
-  { option: "Continues shopping",  data: { type: 'Ordinary',  correct_response: 'f'} },
-
-  { option: "Pays for a vet appointment",   data: { type: 'Saintly', correct_response: 'f'} },
-  { option: "Starts an extensive search for the owner",   data: { type: 'Saintly', correct_response: 'f'} },
-  { option: "Rescues the dog and brings it home",   data: { type: 'Saintly', correct_response: 'f'} },
-  { option: "Gets it some water",   data: { type: 'Saintly', correct_response: 'f'}},
-
-  { option: "Teaches the dog to levitate",   data: { type: 'Impossible', correct_response: 'j'}},
-  { option: "Teaches the dog to talk",   data: { type: 'Impossible', correct_response: 'j'}},
-  { option: "Turns back time so the dog is young again",   data: { type: 'Impossible', correct_response: 'j'}},
-  { option: "Teaches the dog to cook",   data: { type: 'Impossible', correct_response: 'j'}},
-  { option: "Gives the dog eternal life",  data: {  type: 'Impossible', correct_response: 'j'} },
-  { option: "Puts the dog down",  data: {  type: 'Immoral', correct_response: 'f'} },
-  { option: "Gives the dog poison",  data: {  type: 'Immoral', correct_response: 'f'} },
-  { option: "Shoves the dog into the road",  data: {  type: 'Immoral', correct_response: 'f'} },
-  { option: "Puts the dog in a fighting ring",  data: {  type: 'Immoral', correct_response: 'f'} },
-  { option: "Calls an animal exterminator",  data: {  type: 'Immoral', correct_response: 'f'} }
-]);
-
-var options2 = jsPsych.randomization.shuffle([
-      { option: "Puts the wallet in an obvious place",  data: { type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Leaves the wallet where it is", data: {  type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Ignores the wallet", data: {  type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Figures out the wallet's brand", data: {  type: 'Ordinary',  correct_response: 'f'}},
-
-      { option: "Spends all their time finding the owner ",  data: {  type: 'Saintly', correct_response: 'f'}},
-      { option: "Drives to the owner's house",  data: {  type: 'Saintly', correct_response: 'f'}},
-      { option: "Looks around for the owner",  data: {  type: 'Saintly', correct_response: 'f'}},
-      { option: "Start making overhead announcements",  data: {  type: 'Saintly', correct_response: 'f'}},
-      { option: "Gives the wallet to the police",  data: {  type: 'Saintly', correct_response: 'f'}},
-
-      { option: "Gains dog-like sniffing abilities",   data: { type: 'Impossible', correct_response: 'j'}},
-      { option: "Gives the wallet sentience;",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Travels back in time",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Uses telekinesis to return the wallet",   data: { type: 'Impossible', correct_response: 'j'}},
-      { option: "Teleports the wallet to the owner",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Blackmails the owner of the wallet",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Sells the ID in the wallet",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Takes the money from the wallet",  data: {  type: 'Immoral', correct_response: 'f'} },
-     { option: "Tells the owner they are stupid for losing it",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Burns the wallet",  data: {  type: 'Immoral', correct_response: 'f'} }
-      ]);
-
-var options3 = jsPsych.randomization.shuffle([
-      { option: "Calls someone to tell them what happened", data: {  type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Looks for a note that was left behind", data: {  type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Looks at the child", data: {  type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Reads a story to the child",  data: { type: 'Ordinary',  correct_response: 'f'}},
-
-      { option: "Treats the child as her stepson",   data: { type: 'Saintly', correct_response: 'f'}},
-      { option: "Coaches the mother until she is ready to be a parent again",   data: { type: 'Saintly', correct_response: 'f'}},
-      { option: "Adds the child to your will", data: {   type: 'Saintly', correct_response: 'f'}},
-      { option: "Starts a college fund",  data: {  type: 'Saintly', correct_response: 'f'}},
-
-      { option: "Travels to the future",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Creates a magical supply of food",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Makes the child an adult",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Clones the child",  data: {  type: 'Impossible', correct_response: 'j'}},
-
-      { option: "Abuses the child",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Leaves the child entirely",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Kicks the child out of the house",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Shouts at the child constantly",  data: {  type: 'Immoral', correct_response: 'f'} },
-      ]);
-
-var options4 = jsPsych.randomization.shuffle([
-      { option: "Waits for someone else to help", data: {  type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Asks someone else to help her", data: {  type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Looks around in panic",  data: { type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Asks her what happened", data: {  type: 'Ordinary',  correct_response: 'f'}},
-    
-      { option: "Pays for her medical expenses",  data: {  type: 'Saintly', correct_response: 'f'}},
-      { option: "Brings her to live in their home",  data: {  type: 'Saintly', correct_response: 'f'}},
-      { option: "Drives her to the hospital",  data: {  type: 'Saintly', correct_response: 'f'}},
-      { option: "Spends every day helping her walk again",  data: {  type: 'Saintly', correct_response: 'f'}},
-
-      { option: "Travels to the future", data: {   type: 'Impossible', correct_response: 'j'}},
-      { option: "Grows her a new leg",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Turns back time to stop her falling",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Gives her an elixir that fixes her DNA",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Brews a potion to instantly heal her",  data: {  type: 'Impossible', correct_response: 'j'}},
-
-      { option: "Takes her money and runs away",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Kicks her",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Steals from her",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Scams her into paying for unnecessary treatments",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Refuses to get help",  data: {  type: 'Immoral', correct_response: 'f'} }
-      ]);
+    var consentform = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: '<p>Please read the following and press the button at the bottom of the screen to begin.</p><p></p>' +
+        '<p><h1><strong>CONSENT FORM</strong></h1></p><p></p>' +
+        '<div align=left>' +
+        '<p><strong>Project Summary:</strong><br />You are invited to participate in a research study conducted by Principal Investigator ' + researcher_name + ' Amsterdam Business School, University of Amsterdam, Netherlands in collaboration with a team of international researchers. Through this study, we hope to gain a better understanding of how some habits of thought interrelate.</p>' +
+        '<p><strong>Eligibility Criteria. To Participate you must: </strong><br />Be at least 17 years of age AND be a fluent/native English speaker.</p>' +
+        '<p><strong>What is involved?</strong><br />You will be asked to complete a number of questionnaires, as follows: </p>' +
+        '<p> - You will be asked to read a number of short descriptions of hypothetical scenarios. Afterwards, you will read descriptions of potential actions people may undertake in those situations. Your job is to indicate whether you think those actions are possible or not.' +
+        '<p> - You will be asked to answer a few questions about some of your thinking habits.' +
+        '<p> - You will be asked to answer a few questions about the kind of situations you like or dislike.' +
+        '<p> - You will be asked to answer a few questions about creativity.' +
+        '<p><strong>How much of my time will I need to give?</strong><br />The total experiment will take roughly ' + time_required + ' minutes.</p>' +
+        '<p><strong>Compensation:</strong><br />You will receive .25 course credit for your participation, which will be deposited into your lab account. Participation is voluntary and you may withdraw from the survey at any time by closing the browser window. You can withdraw with remuneration by clicking through the study to the end. Note that we have embedded several attention checks in the survey. Please try and stay attentive for the duration of the study. You may decline to answer any other questions that you prefer not to answer by leaving them blank. The risks of participation are no greater than what you experience day to day. There are no direct benefits to participation in this study.  </p>' +
+        '<p><strong>Confidentiality & Data Storage:</strong><br />TYour identity will remain completely confidential. Because we are interested in the average responses of the entire group of participants, you will not be individually identified; additionally, you will be identified with a meaningless participant ID number only. The data collected from this study will be maintained on a password-protected computer in a restricted access area at University of Amsterdam, to which only the authorized researchers (dr. Gijs van Houwelingen) will have access for at least 7 years. De-identified data related to your participation may be submitted to an open access repository or journal (i.e., the data may be publicly available). These data will be completely de-identified/anonymized prior to submission by removing all personally identifying information (any identifying demographic information) before submission and will be presented in aggregate form in publications. This process is integral to the research process as it allows other researchers to verify results and avoid duplicating research. Other individuals may access these data by accessing the open access repository. Although the dataset without identifiers may be shared publicly, your identity will always remain confidential. </p>' +
+        '<p>This survey uses Pavlovia, a type of online survey software. When information is transmitted over the Internet privacy cannot be guaranteed. There is always a risk your responses may be intercepted by a third party (e.g., government agencies, hackers). Pavlovia may temporarily collect machine identifiers (i.e., IP addresses) to avoid duplicate responses in the dataset but will not collect information that could identify you personally. If you prefer not to provide your data using this program, please do not participate in this study. If you have any comments or concerns during the study or at a later date, please do not hesitate to contact dr. Gijs van Houwelingen at g.g.vanhouwelingen@uva.nl.</p>' +
+        "<p><strong>Ethics Review:</strong><br />This study has been reviewed and received ethics clearance through the Ethics Committee Economics and Business (EBEC), University of Amsterdam, under number EC 20210510030544. If you have questions for the Committee contact them at (31)20-5255311 or at secbs-abs@uva.nl. </p>" +
+        "<p>By indicating your consent, you are not waiving your legal rights or releasing the investigator or involved institution from their legal and professional responsibilities.</p>" +
+        '<p><strong>Thank you for considering participation in this study.</strong><br />Please contact ' + researcher_name + ' at ' + researcher_email + ', if further information is required.</p>' +
+        '</div><p></p>',
+      choices: ['I CONSENT TO PARTICIPATE IN THIS STUDY'],
+      prompt: "<p><small>Click this button to continue, or close this page to exit.</small></p><p></p>",
+      data: { stimulus: 'consentform' },
+    };
+    // tl.push(consentform);
 
 
+    tl.push({
+      type: jsPsychFullscreen,
+      message: '<div class="instructions"><p>Thank you for agreeing to participate.</p><p>Press the button below to begin in full screen mode.</p></div>',
+      fullscreen_mode: true
+    });
 
-var options5 = jsPsych.randomization.shuffle([
-      { option: "Does not give advice", data: {  type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Continues with their day", data: {  type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Doesn't say anything", data: {  type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Avoids getting involved",  data: { type: 'Ordinary',  correct_response: 'f'}},
-      { option: "Looks at the ring", data: {  type: 'Ordinary',  correct_response: 'f'}},
+    var fixation = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: '<div class="rsvp">+</div>',
+      choices: "NO_KEYS",
+      trial_duration: 2000,
+      data: { test_part: 'fixation' },
+    }
 
-      { option: "Pays for professional acting lessons",   data: { type: 'Saintly', correct_response: 'f'}},
-      { option: "Lends her some money",  data: {  type: 'Saintly', correct_response: 'f'}},
-      { option: "Gives her $1000",  data: {  type: 'Saintly', correct_response: 'f'}},
-      { option: "Takes her to auditions",   data: { type: 'Saintly', correct_response: 'f'}},
+    /////////////////////////////////////////////////////
+    /* define the SCENARIOS */
+    var scenario_stimuli1 = ["A person goes to a grocery store. They see an elderly dog lying on its side and ask a clerk how long it has been there. It has been lying there all day. "];
+    var scenario_stimuli2 = ["A person and their daughter are shopping in a toy store at the mall. They find a wallet that has money and receipts in it."];
+    var scenario_stimuli3 = ["The day after a person marries their husband, his previous girlfriend comes to their house and drops off their three-month-old son. The married couple did not see her again for eleven years."];
+    var scenario_stimuli4 = ["A person&#180;s mom falls and hurts herself badly."];
+    var scenario_stimuli5 = ["A person is friends with a woman who wants to pursue an acting career. She is going to pawn this ring that was in her family for years. They do not want her to pawn the ring."];
 
+    var scenario_pract1 = ["Possible"];
+    var scenario_pract2 = ["Possible"];
+    var scenario_pract3 = ["Impossible"];
+    var scenario_pract4 = ["Impossible"];
+    var scenario_pract5 = ["Impossible"];
 
-      { option: "Copies a famous actor's brain chemistry",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Goes back in time to remake a movie",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Magically recreates the ring",   data: { type: 'Impossible', correct_response: 'j'}},
-      { option: "Uses psychic energy to win the lottery",  data: {  type: 'Impossible', correct_response: 'j'}},
-      { option: "Performs magic to get a role",  data: {  type: 'Impossible', correct_response: 'j'}},
+    /* Adding all the scenarios to an array, we will loop through this array*/
+    var practice = [scenario_pract1, scenario_pract2, scenario_pract3, scenario_pract4, scenario_pract5]
 
-      { option: "Mocks her goals",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Steals the ring",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Deliberately gives her bad advice",  data: {  type: 'Immoral', correct_response: 'f'} },
-      { option: "Prevents her from getting an acting job",  data: {  type: 'Immoral', correct_response: 'f'} },
-      ]);
+    var scenarios = [scenario_stimuli1, scenario_stimuli2, scenario_stimuli3, scenario_stimuli4, scenario_stimuli5];
 
-var timepressure = jsPsych.randomization.sampleWithoutReplacement([0, 1], 1);
-console.log('timepressure: '+timepressure)
-
-// END CHECK SECTION 
-
-/* Add all options-arrays to yet another array */
-/* By doing this we have an ordered array containing all the scenarios, as well as an array containing all the options ordered like the scenarios*/
-var options = [options1, options2, options3, options4, options5]
-
-/* Creating a list of shuffled numbers, we will use this list to ensure scenarios and options are randomized in the same way*/
-/* Essentially, we will randomize this list and access our scenarios & options through this list */
-/* Note that this list should have the same length as the "scenarios" variable*/
-var shuffledList = jsPsych.randomization.shuffle([0,1,2,3,4])
-console.log('shuffledList: '+shuffledList)
-
-/* add the subject ID to my experiment  making it a property*/
-jsPsych.data.addProperties({
-            subject: subject_id,
-            survey: surveyCode,
-            condition: timepressure,
-            brwser: browser,
-            operatingS: OS,
-            order: shuffledList
-          });
-
-/////////////////////////////////////////////////////
-/* define instruction information */
-
-var gen_instructions_NOTIME = {
-  type: "html-keyboard-response",
-  stimulus: 
-     "<p><strong>You will now begin the experiment! Please read the following instructions carefully:</p></strong>" + 
-     "<p>The experiment consists of different blocks. In each block you will first be confronted with a specific scenario. You will then be shown several potential responses to that scenario. We would like you to tell us whether the response you see is <b>possible</b> or whether that response would be <b>impossible</b> in that particular situation.</p>" +
-     "<p>To indicate that something is possible, press the <b>[f]</b> key; to indicate that something is NOT possible, please press the <b>[j]</b> key.</p>" +
-     "<p><b>There is no timelimit for this task, so please carefully deliberate on the possibility of each response.</b></p>" +
-     "<p>***Please pay close attention!***</p>" + 
-     "<p>Before starting the main experiment we will first start with a warm-up session.</p>" + 
-     '<p></p>' +
-     '<p></p>' +
-     "<p>Press the SPACE BAR to continue.</p>",
-  choices: [' '],
-  data: {stimulus: 'instructions'},
-  };
-
-
-var gen_instructions_TIME = {
-  type: "html-keyboard-response",
-  stimulus: 
-    "<p>You will now begin the experiment! Please read the following instructions carefully:</p>" + 
-     "<p>The experiment consists of different blocks. In each block, you will first be confronted with a specific scenario and subsequently, with several possible responses to that scenario. We would like you to tell us whether these different responses are either a possible or an impossible response to the situation described in the scenario.</p>" +
-     "<p>To indicate that it is true that something is possible, press the <b>[f]</b> key; to indicate that something is NOT possible, please press the <b>[j]</b> key.</p>" +
-     "<p><b>You will have to make these decisions under time pressure and will have to respond very quickly before the text disappears. </b></p>" +
-     "<p>***Please pay close attention!***</p>" + 
-     "<p>Before starting the main experiment we will first start with a warm-up session.</p>" + 
-     '<p></p>' +
-     '<p></p>' +
-     "<p>Press the SPACE BAR to continue.</p>",
-  choices: [' '],
-  data: {stimulus: 'instructions'},
-  };
-
-var prac_instructions = {
-  type: "html-keyboard-response",
-  stimulus: 
-  '<div align=left>' +
-  "We will now begin with a warm-up phase." +
-  "<p>On these trials, please press <b>[f]</b> if you see the word 'Possible' and <b>[j]</b> if you see the word 'Impossible' as quickly as possible</p>"+
-  '</div><p></p>' +
-  "<p>Press the SPACE BAR to begin the warm-up.</p>", 
-  choices: [' '],
-  data: {stimulus: 'instructions'},
-  }; 
-
-var task_instructions = {
-  type: "html-keyboard-response",
-  stimulus: "Great! We will now being the main task. You will first see a scenario to read and then will be judging whether different actions are possible <b>(f key)</b> or impossible <b>(j key)</b>."+
-  "<p>***Please answer as accurately as you possibly can.***</p>"+
-  "<p>Press the SPACE BAR to continue.</p>",
-  choices: [' '],
-  data: {stimulus: 'instructions'},
-  };
-
-var read_instructions = {
-  type: "html-keyboard-response",
-  stimulus: "Please read the following scenario. The scenario will be displayed for 5 seconds."+
-  "<p>Press the SPACE BAR to continue.</p>",
-  choices: [' '],
-  data: {stimulus: 'instructions'},
-};
-
-var scen_instructions = {
-  type: "html-keyboard-response",
-  stimulus: "Given the scenario you just read, please tell us whether it is possible or impossible to do the following actions." +
-  "<p> Press the SPACE BAR when you are ready to begin.</p>",
-  choices: [' '],
-  data: {stimulus: 'instructions'},
-};
-
-var interim_block = {
-  type: "html-keyboard-response",
-  stimulus: "Great! You have completed a block." +
-  "<p> Press the SPACE BAR to begin the next block.</p>",
-  choices: [' '],
-  data: {stimulus: 'instructions'},
-};
-
-/////////////////////////////////////////////////////
-/* define survey information */
-// option + command + arrow key in VSCode give you multiline edits
-
-
-var NFCq = ["Extremely uncharacteristic", "Somewhat uncharacteristic", "Uncertain", "Somewhat characteristic", "Extremely characteristic"];
-var TAq = ["Strongly disagree", "Disagree", "Somewhat disagree", "Neither agree nor disagree", "Somewhat agree", "Agree", "Strongly agree"];
-var CCq = ["Strongly disagree", "Disagree", "Somewhat disagree", "Neither agree nor disagree", "Somewhat agree", "Agree", "Strongly agree"];
-var Genderq = ["Man", "Woman", "Non-binary", "Other", "Prefer not to answer"];
-var Eduq = ["Some high school", "High school degree", "Some college", "Associates Degree", "Bachelors degree", "Graduate degree"];
-var PolIDq = ["1 = Extremely Liberal", "2", "3", "4 = Neither", "5", "6", "7 = Extremely Conservative"];
-var Relq = ["1 = Not at all Religious", "2", "3", "4", "5", "6", "7 = Extremely Religious"];
-var Incomeq = ["Less than $10,000 USD a year", "$10,000 - $20,000 USD", "$20,000-$40,000 USD", "$40,000-$60,000 USD", "$60,000-$80,000 USD", "$80,000-$100,000 USD", "$100,000 USD a year or more"];
-var Raceq = ["White, not hispanic or latinx", "Black or African American", "Asian", "American Indian or Alaska Native", "Native Hawaiian or Other Pacific Islander", "Hispanic or Latinx", "Two or more", "Not listed"];
-var Demand1q = ["1 = Not at all", "2", "3", "4", "5 = Very much so"];
-var compTypeq = ["Laptop/Desktop", "Ipad/Tablet", "Other"];
-var SDOq = ["Strongly oppose", "Somewhat oppose", "Slightly oppose", "Neutral", "Slightly favor", "Somewhat favor", "Strongly favor"];
-var IRq = ["Strongly disagree", "Disagree", "Neither disagree nor agree", "Agree", "Strongly agree"];
-var UCCq = ["Strongly disagree", "Disagree", "Somewhat disagree", "Neither disagree nor agree", "Somewhat agree", "Agree", "Strongly agree"];
-var MEXq = ["Inner circle of moral concern", "Outer circle of moral concern", "Fringes of moral concern", "Outside the moral boundary"];
-var GIq = ["Very inaccurate", "Moderately inaccurate", "Slightly inaccurate", "Slightly accurate", "Moderately accurate", "Very accurate"];
-var SRPPq = ["Strongly oppose", "Somewhat oppose", "Slightly oppose", "Neither oppose nor support", "Slightly support", "Somewhat support", "Strongly support"];
-var SNFCq = ["Completely disagree", "Disagree", " Slightly Disagree ", " Slightly Agree ", "Agree", "Completely agree"]; //need for closure
-var B5q = ["Completely disagree", "Disagree", " Slightly Disagree ", " Slightly Agree ", "Agree", "Completely agree"];
-var PTq = ["1 = Does not describe me very well", "2", "3", "4", " 5 = Describe me well "];
-var IRIq = ["1 = Does not describe me very well", "2", "3", "4", "5 = Describes me very well"];
-var ARTq = ["Yes", "No"];
-var MIq = ["Completely disagree", "Disagree", " Slightly Disagree ", " Slightly Agree ", "Agree", "Completely agree"];
-var MPq = ["Completely disagree", "Disagree", " Slightly Disagree ", " Slightly Agree ", "Agree", "Completely agree"]; 
-
-
-// Areli CHECK HERE 
-var SRPP= {type: 'survey-multi-choice',
-	questions: [
-          {prompt: "<b>Universal Healthcare or Medicare for all</b>", options: SRPPq, required: true, horizontal: true,}, 
-          {prompt: '<b>Debt forgiveness</b>', options: SRPPq, required: true, horizontal: true},
-          {prompt: '<b>Green New Deal</b>', options: SRPPq, required: true, horizontal: true,}, 
-          {prompt: '<b>Abolish Immigration and Customs Enforcement (ICE)</b>', options: SRPPq, required: true, horizontal: true},
-          {prompt: '<b>Abolish police</b>', options: SRPPq, required: true, horizontal: true},
-          {prompt: '<b>Complete criminal justice reform</b>', options: SRPPq, required: true, horizontal: true,}, 
-          {prompt: '<b>Decriminalizing sex work</b>', options: SRPPq, required: true, horizontal: true},
-          {prompt: '<b>Expansion of public markets </b>', options: SRPPq, required: true, horizontal: true,}, 
-          {prompt: "<b>Decrease military spending/demilitarization</b>", options: SRPPq, required: true, horizontal: true},
-          {prompt: '<b>Free market regulation</b>', options: SRPPq, required: true, horizontal: true},
-          {prompt: '<b>Tax the rich</b>', options: SRPPq, required: true, horizontal: true,}, 
-          {prompt: '<b>Limit the accumulation of private property</b>', options: SRPPq, required: true, horizontal: true},
-          {prompt: '<b>Nationalize big businesses</b>', options: SRPPq, required: true, horizontal: true,}, 
-          {prompt: '<b>Expand unemployment</b>', options: SRPPq, required: true, horizontal: true},
-          {prompt: '<b>Increase funding for school</b>', options: SRPPq, required: true, horizontal: true},
-          {prompt: '<b>Legalize marijuana</b>', options: SRPPq, required: true, horizontal: true,}, 
-          {prompt: '<b>Legalize all drug use</b>', options: SRPPq, required: true, horizontal: true},	
-          ],
-
-		randomize_question_order: true,
-		preamble: "Please rate the extent to which you support (or not support) the policies listed below. You can work quickly; your first feeling is generally best."
-		};
-// CHECK END 
-
-var SDO = {type: 'survey-multi-choice',
-	questions: [
-			{prompt: '<b>An ideal society requires some groups to be on top and others to be on the bottom</b>', options: SDOq, required: true, horizontal: true,}, 
-			{prompt: '<b>Some groups of people are simply inferior to other groups</b>', options: SDOq, required: true, horizontal: true},
-			{prompt: '<b>No one group should dominate in society</b>', options: SDOq, required: true, horizontal: true,}, 
-			{prompt: '<b>Groups at the bottom are just as deserving as groups at the top</b>', options: SDOq, required: true, horizontal: true},
-			{prompt: '<b>Group equality should not be our primary goal</b>', options: SDOq, required: true, horizontal: true},
-			{prompt: '<b>It is unjust to try to make groups equal</b>', options: SDOq, required: true, horizontal: true},
-			{prompt: '<b>We should do what we can to equalize conditions for different groups</b>', options: SDOq, required: true, horizontal: true},
-			{prompt: '<b>We should work to give all groups an equal chance to succeed</b>', options: SDOq, required: true, horizontal: true}		  
-		],
-		randomize_question_order: true,
-		preamble: "Show how much you favor or oppose each idea below. You can work quickly; your first feeling is generally best."
-		};
-
-var GI = {type: 'survey-multi-choice',
-	questions: [
-		{prompt: 'I am lost in imagination most of the time', options: GIq, required: true, horizontal: true,}, 
-		{prompt: 'I find myself lost in imagination very frequently', options: GIq, required: true, horizontal: true},
-		{prompt: 'I find myself daydreaming often', options: GIq, required: true, horizontal: true,}, 
-		{prompt: 'I spend much of my time daydreaming', options: GIq, required: true, horizontal: true},
-		{prompt: 'I get lost in my fantasies', options: GIq, required: true, horizontal: true},
-		{prompt: 'I get lost in thoughts that aren’t related to what’s going on around me ', options: GIq, required: true, horizontal: true},
-		{prompt: 'Sometimes it is as though I wake up from daydreaming', options: GIq, required: true, horizontal: true},
-		{prompt: 'My mind wanders in unpredictable ways', options: GIq, required: true, horizontal: true},
-		{prompt: 'I often fantasize about impossible things', options: GIq, required: true, horizontal: true},
-		{prompt: 'Imagining my future makes me feel blue', options: GIq, required: true, horizontal: true},
-		{prompt: 'I become depressed when imagining my future', options: GIq, required: true, horizontal: true},	
-		{prompt: 'Imagining things in the future makes me fearful', options: GIq, required: true, horizontal: true},
-		{prompt: 'The things I imagine make me sad', options: GIq, required: true, horizontal: true},
-		{prompt: 'My fantasies lead to negative emotions', options: GIq, required: true, horizontal: true},
-		{prompt: 'I visualize negative outcomes for the future of the world', options: GIq, required: true, horizontal: true},	
-		{prompt: 'My daydreams are unpleasant', options: GIq, required: true, horizontal: true},
-		{prompt: 'My fantasies are less detailed than most peoples’ ', options: GIq, required: true, horizontal: true},
-		{prompt: 'Most people seem to have more complex imaginations than me', options: GIq, required: true, horizontal: true},
-		{prompt: 'My imaginings are not very complex', options: GIq, required: true, horizontal: true},
-		{prompt: 'My fantasies do not involve many details', options: GIq, required: true, horizontal: true},
-		{prompt: 'I have difficulty picturing the details of a situation I have not previously experienced', options: GIq, required: true, horizontal: true},
-		{prompt: 'My daydreams have a clear goal', options: GIq, required: true, horizontal: true},
-		{prompt: 'My daydreams are directed towards a specific outcome', options: GIq, required: true, horizontal: true},
-		{prompt: 'My fantasies are quite purposeful', options: GIq, required: true, horizontal: true},
-		{prompt: 'There is a purpose for my fantasies', options: GIq, required: true, horizontal: true},
-		{prompt: 'When I imagine my future, I like to plan its details', options: GIq, required: true, horizontal: true},
-		],
-		randomize_question_order: true,
-		preamble: "Show how much you associate with the items below. You can work quickly; your first feeling is generally best."
-		};
+    /* define the OPTIONS */
 
     // Areli CHECK HERE 
-var IR= {type: 'survey-multi-choice',
-	questions: [
-			{prompt: ' A good author can make me believe anything from dragons to space travel ', options: IRq, required: true, horizontal: true,}, 
-			{prompt: ' The hero of a story should be a moral person.', options: IRq, required: true, horizontal: true},
-			{prompt: ' It makes me uncomfortable when my favorite character commits moral violations as if they were no big deal.', options: IRq, required: true, horizontal: true,}, 
-			{prompt: ' Reading books where bad things are depicted as morally acceptable makes me feel dirty.', options: IRq, required: true, horizontal: true},
-			{prompt: ' I just cant go along with a story when it violates my beliefs about morality.', options: IRq, required: true, horizontal: true},
-			{prompt: ' At times it feels like the author of a book is asking me to endorse actions that I know are wrong.', options: IRq, required: true, horizontal: true},
-			{prompt: ' I sometimes cannot go along with a story when the “good” characters do morally reprehensible things.', options: IRq, required: true, horizontal: true},
-			{prompt: ' I would be uncomfortable reading a book in which the protagonist thought it was okay to kill people ', options: IRq, required: true, horizontal: true},	
-			{prompt: ' I really dont buy into stories that are full of werewolves and witches', options: IRq, required: true, horizontal: true},
-			{prompt: ' Sympathizing with immoral characters makes me feel immoral myself.', options: IRq, required: true, horizontal: true},
-			{prompt: ' I dont like books where bad things are presented as the right thing to do.', options: IRq, required: true, horizontal: true},
-			{prompt: ' I usually avoid books that have the good guys acting in ways that are morally unacceptable.', options: IRq, required: true, horizontal: true},
-			{prompt: ' Being asked to imagine morally repugnant things makes me uncomfortable.', options: IRq, required: true, horizontal: true},
-			{prompt: ' I would be uncomfortable reading a story in which the author endorsed torture.', options: IRq, required: true, horizontal: true},
-			{prompt: ' I just cant go along with a story when it violates the rules of physics.', options: IRq, required: true, horizontal: true}
-		],
-		randomize_question_order: true,
-		preamble: " Show how much you agree with the items below. You can work quickly; your first feeling is generally best"
-		};
+    var options1 = jsPsych.randomization.shuffle([
+      { option: "Walks past the dog", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Avoids looking at the dog", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Stares at the dog", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Assumes the dog is okay", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Continues shopping", data: { type: 'Ordinary', correct_response: 'f' } },
 
-    // CHECK END 
-var UCC= {type: 'survey-multi-choice',
-	questions: [
-      {prompt: '<b> I find effective solutions by combining multiple ideas  </b>', options: UCCq, required: true, horizontal: true,}, 
-			{prompt: '<b> While working on something, I try to generate as many ideas as possible </b>', options: UCCq, required: true, horizontal: true},
-			{prompt: '<b> I try to act out potential solutions to explore their effectiveness </b>', options: UCCq, required: true, horizontal: true,}, 
-			{prompt: '<b> If I get stuck on a problem, I try to take a different perspective of the situation</b>', options: UCCq, required: true, horizontal: true},
-			{prompt: '<b> Incorporating previous solutions in new ways leads to good ideas</b>', options: UCCq, required: true, horizontal: true}
-		],
-		randomize_question_order: true,
-		preamble: " Show how much you agree with the items below. You can work quickly; your first feeling is generally best"
-		};
-// Areli CHECK HERE 
-var MEX= {type: 'survey-multi-choice',
-	questions: [
-			{prompt: '<b> Family member</b>', options: MEXq, required: true, horizontal: true,}, 
-			{prompt: '<b> American Citizen </b>', options: MEXq, required: true, horizontal: true},
-			{prompt: '<b> Somebody with different religious beliefs</b>', options: MEXq, required: true, horizontal: true,}, 
-			{prompt: '<b> Charity/aid worker</b>', options: MEXq, required: true, horizontal: true},
-			{prompt: '<b> Mentally challenged individual</b>', options: MEXq, required: true, horizontal: true},
-			{prompt: '<b> Murderer </b>', options: MEXq, required: true, horizontal: true,}, 
-			{prompt: '<b> Dolphin</b>', options: MEXq, required: true, horizontal: true},
-      {prompt: '<b> Fish</b>', options: MEXq, required: true, horizontal: true,}, 
-			{prompt: '<b> Apple Tree </b>', options: MEXq, required: true, horizontal: true},
-      {prompt: '<b> Family member</b>', options: MEXq, required: true, horizontal: true,}, 
-			{prompt: '<b> Old-growth forest</b>', options: MEXq, required: true, horizontal: true}],
-    
-    // CHECK END 
-    randomize_question_order: true,
-		preamble: "Below please consider the level of moral concern you have for each of the entities." +
-    "We would like you to place them into one of the four boundaries of moral concern. Please read these descriptions carefully before making your decisions." +  
-    "Inner circle of moral concern: These entities deserve the highest level of moral concern and standing. You have a moral obligation to ensure their welfare and feel a sense of personal responsibility for their treatment." +
-    "Outer circle of moral concern: These entities deserve moderate moral concern and standing. You concerned about their moral treatment; however, your sense of obligation and personal responsibility is greatly reduced." +
-    "Fringes of moral concern: These entities deserve the minimal moral concern and standing, but you are not moral obligated or personally responsible for their moral treatment." +
-    "Outside the moral boundary: These entities deserve no moral concern or standing, feeling concerned or personal responsibility for their moral treatment is extreme or nonsensical." +
-    '<img src="jsPsych/examples/img/MEX.jpg" style="width:400px;"></img>'
-		};
+      { option: "Pays for a vet appointment", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Starts an extensive search for the owner", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Rescues the dog and brings it home", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Gets it some water", data: { type: 'Saintly', correct_response: 'f' } },
 
-var OpenEnded = {
-	type: 'survey-text',
-	questions: [
-	  {prompt: "Name as many different ways you can think of to become a better person</p>", 
-	  rows: 6, columns: 40}
-	],
-	on_finish: function(data) {
-		data.response_json = JSON.stringify(data.response);
-	}
-  };      
+      { option: "Teaches the dog to levitate", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Teaches the dog to talk", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Turns back time so the dog is young again", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Teaches the dog to cook", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Gives the dog eternal life", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Puts the dog down", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Gives the dog poison", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Shoves the dog into the road", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Puts the dog in a fighting ring", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Calls an animal exterminator", data: { type: 'Immoral', correct_response: 'f' } }
+    ]);
 
-var NFC = {
-            type: 'survey-multi-choice',
-            questions: [
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I would prefer complex to simple problems.</b></p>', options: NFCq, required: true, horizontal: true,}, 
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I like to have the responsibility of handling a situation that requires a lot of thinking.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>Thinking is not my idea of fun.</b></p>', options: NFCq, required: true, horizontal: true,}, 
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I would rather do something that requires little thought than something that is sure to challenge my thinking abilities.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I try to anticipate and avoid situations where there is a likely chance I will have to think in depth about something.</b></p>', options: NFCq, required: true, horizontal: true,}, 
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I find satisfaction in deliberating hard and for long hours.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I only think as hard as one has to.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I prefer to think about small, daily projects to long-term ones.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I like tasks that require little thought once Ive learned them.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>The idea of relying on thought to make my way to the top appeals to me.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I really enjoy a task that involves coming up with new solutions to problems.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>Learning new ways to think doesnt excite me very much. </b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I prefer my life to be filled with puzzles that I must solve.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>The notion of thinking abstractly is appealing to me.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I would prefer a task that is intellectual, difficult, and important to one than is somewhat important but does not require much thought.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I feel relief rather than satisfaction after completing a task that required a lot of mental effort.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>It is enough for me that something gets the job done. I dont care how or why it works.</b></p>', options: NFCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I usually end up deliberating about issues even when they do not affect me personally.</b></p>', options: NFCq, required: true, horizontal: true}
-            ],
-            randomize_question_order: true,
-            preamble: 'Please indicate how much you agree with each of the following statements, or how true it is about you using the scale provided:',
-            scale_width: 500
-            };
+    var options2 = jsPsych.randomization.shuffle([
+      { option: "Puts the wallet in an obvious place", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Leaves the wallet where it is", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Ignores the wallet", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Figures out the wallet's brand", data: { type: 'Ordinary', correct_response: 'f' } },
 
-var TA = {
-            type: 'survey-multi-choice',
-            questions: [
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I do not tolerate ambiguous situations well.</b></p>', options: TAq, required: true, horizontal: true,}, 
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I would rather avoid solving a problem that must be viewed from several different perspectives.</b></p>', options: TAq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I try to avoid situations that are ambiguous.</b></p>', options: TAq, required: true, horizontal: true,}, 
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I prefer familiar situations to new ones.</b></p>', options: TAq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>Problems that cannot be considered from just one point of view are a little threatening.</b></p>', options: TAq, required: true, horizontal: true,}, 
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I avoid situations that are too complicated for me to easily understand.</b></p>', options: TAq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I am tolerant of ambiguous situations.</b></p>', options: TAq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I enjoy tackling problems that are complex enough to be ambiguous.</b></p>', options: TAq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I try to avoid problems that do not seem to have only one <i>best</i> solution.</b></p>', options: TAq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I generally prefer novelty over familiarity.</b></p>', options: TAq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I dislike ambiguous situations.</b></p>', options: TAq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I find it hard to make a choice when the outcome is uncertain.</b></p>', options: TAq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I prefer a situation in which there is some ambiguity.</b></p>', options: TAq, required: true, horizontal: true}
-            ],
-            randomize_question_order: true,
-            scale_width: 500,
-            preamble: 'Please indicate how much you agree with each of the following statements, or how true it is about you using the scale provided:'
-            };
+      { option: "Spends all their time finding the owner ", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Drives to the owner's house", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Looks around for the owner", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Start making overhead announcements", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Gives the wallet to the police", data: { type: 'Saintly', correct_response: 'f' } },
 
-var CC = {
-            type: 'survey-multi-choice',
-            questions: [
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I find effective solutions by combining multiple ideas.</b></p>', options: CCq, required: true, horizontal: true,}, 
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>While working on something, I try to generate as many ideas as possible.</b></p>', options: CCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>I try to act out potential solutions to explore their effectiveness.</b></p>', options: CCq, required: true, horizontal: true,}, 
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>If I get stuck on a problem, I try to take a different perspective of the situation.</b></p>', options: CCq, required: true, horizontal: true},
-                {prompt: '<p style="text-align: left;font-size:18px;"><b>Incorporating previous solutions in new ways leads to good ideas.</b></p>', options: CCq, required: true, horizontal: true,}            ],
-            randomize_question_order: true,
-            scale_width: 500,
-            preamble: 'Please indicate how much you agree with each of the following statements, or how true it is about you using the scale provided:'
-            };
+      { option: "Gains dog-like sniffing abilities", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Gives the wallet sentience;", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Travels back in time", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Uses telekinesis to return the wallet", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Teleports the wallet to the owner", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Blackmails the owner of the wallet", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Sells the ID in the wallet", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Takes the money from the wallet", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Tells the owner they are stupid for losing it", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Burns the wallet", data: { type: 'Immoral', correct_response: 'f' } }
+    ]);
 
-var demo_Age = {
-        type: 'survey-text',
-        questions: [
-        {prompt: 'How old are you?', columns: 3, required: true, name: 'Age'},
-        {prompt: 'What is your religious affiliation?', columns: 50, name: 'Religious Affiliation'}
-        ],
-        randomize_question_order: true
-        };
+    var options3 = jsPsych.randomization.shuffle([
+      { option: "Calls someone to tell them what happened", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Looks for a note that was left behind", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Looks at the child", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Reads a story to the child", data: { type: 'Ordinary', correct_response: 'f' } },
 
-var demo_gen = {
-        type: 'survey-multi-choice',
-        questions: [
-            {prompt: '<p style="text-align: left;font-size:18px;">What is your Gender?</p>', options: Genderq, required: true, horizontal: true,}, 
-            {prompt: '<p style="text-align: left;font-size:18px;">Which of the following items BEST describes your ethnic or racial background?</p>', options: Raceq, required: true, horizontal: true},
-            {prompt: '<p style="text-align: left;font-size:18px;">How religious would you consider yourself?</p>', options: Relq, required: true, horizontal: true,}, 
-            {prompt: '<p style="text-align: left;font-size:18px;">What is your household income?</p>', options: Incomeq, required: true, horizontal: true},
-            {prompt: '<p style="text-align: left;font-size:18px;">What is the highest degree or level of school you have completed?</p>', options: Eduq, required: true, horizontal: true}
-          ],
-        randomize_question_order: true,
-        scale_width: 500,
-        preamble: '<p style="text-align: left;font-size:28px;"Using the scales provided, please respond to each question about you as an individual.</p>'
-        };
+      { option: "Treats the child as her stepson", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Coaches the mother until she is ready to be a parent again", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Adds the child to your will", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Starts a college fund", data: { type: 'Saintly', correct_response: 'f' } },
 
-var demo_PolIQ = {
-        type: 'survey-multi-choice',
-        questions: [
-            {prompt: '<p style="text-align: left;font-size:18px;">Which response best captures your political beliefs surrounding economic issues?</p>', options: PolIDq, required: true, horizontal: true,}, 
-            {prompt: '<p style="text-align: left;font-size:18px;">Which response best captures your political beliefs surrounding social issues?</p>', options: PolIDq, required: true, horizontal: true},
-            {prompt: '<p style="text-align: left;font-size:18px;">When it comes to overall political issues, you consider yourself to be a:</p>', options: PolIDq, required: true, horizontal: true,}
-        ],
-        randomize_question_order: true,
-        scale_width: 500,
-        preamble: '<p style="text-align: left;font-size:28px;"Please answer the following questions about your political ideology.</p>'
-        };
+      { option: "Travels to the future", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Creates a magical supply of food", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Makes the child an adult", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Clones the child", data: { type: 'Impossible', correct_response: 'j' } },
 
-var demo_FinalQs = {
-        type: 'survey-multi-choice',
-        questions: [
-            {prompt: '<p style="text-align: left;font-size:18px;">What kind of device did you use to complete this study?</p>', options: compTypeq, required: true, horizontal: true,}, 
-            {prompt: '<p style="text-align: left;font-size:18px;">Did you feel pressure to respond in a particular way to any of the questions?</p>', options: Demand1q, required: true, horizontal: true,}, 
-            {prompt: '<p style="text-align: left;font-size:18px;">Did you feel as though you might be judged for your responses to the questions you answered.</p>', options: Demand1q, required: true, horizontal: true}        
-          ],
-        randomize_question_order: true,
-        scale_width: 500,
-        preamble: '<p style="text-align: left;font-size:28px;"For these final questions, please answer as honestly as you can! The answers to these questions will not affect whether or not you receive credit/payment for participation!</p>'
-        };
+      { option: "Abuses the child", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Leaves the child entirely", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Kicks the child out of the house", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Shouts at the child constantly", data: { type: 'Immoral', correct_response: 'f' } },
+    ]);
+
+    var options4 = jsPsych.randomization.shuffle([
+      { option: "Waits for someone else to help", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Asks someone else to help her", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Looks around in panic", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Asks her what happened", data: { type: 'Ordinary', correct_response: 'f' } },
+
+      { option: "Pays for her medical expenses", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Brings her to live in their home", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Drives her to the hospital", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Spends every day helping her walk again", data: { type: 'Saintly', correct_response: 'f' } },
+
+      { option: "Travels to the future", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Grows her a new leg", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Turns back time to stop her falling", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Gives her an elixir that fixes her DNA", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Brews a potion to instantly heal her", data: { type: 'Impossible', correct_response: 'j' } },
+
+      { option: "Takes her money and runs away", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Kicks her", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Steals from her", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Scams her into paying for unnecessary treatments", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Refuses to get help", data: { type: 'Immoral', correct_response: 'f' } }
+    ]);
 
 
-var open_ended_instr = {
-  type: "html-keyboard-response",
-  stimulus: 
-     "<p>We are interested in how people think about personal development. Specifically, imagine that</p>" + 
-     "<p><strong>become a better person</strong>is someone's life goal for the next year.</p>" +
-     "<p>Please name as many different activities or ways that a person could achieve this goal within the next 2 minutes.</p>" +
-     "<p><b>There is no timelimit for this task, so please carefully deliberate on the possibility of each response.</b></p>" +
-     "<p>You can name either specific activities projects (e.g., practice meditation) or more general intentions (e.g., be kinder to animals).</p>" + 
-     "<p>Your answer may, but do not have to, reflect these examples.</p>" + 
-     '<p></p>' +
-     '<p></p>' +
-     "<p>Press the SPACE BAR to continue.</p>",
-  choices: [' '],
-  data: {stimulus: 'instructions'},
-  };
 
-//need for closure
+    var options5 = jsPsych.randomization.shuffle([
+      { option: "Does not give advice", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Continues with their day", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Doesn't say anything", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Avoids getting involved", data: { type: 'Ordinary', correct_response: 'f' } },
+      { option: "Looks at the ring", data: { type: 'Ordinary', correct_response: 'f' } },
 
-var SNFC= {type: 'survey-multi-choice',
-	questions: [
-			
-    {prompt: ' I don’t like situations that are uncertain.', options: SNFCq, required: true, horizontal: true,}, 
-		{prompt: ' I dislike questions which could be answered in many different ways. ', options: SNFCq, required: true, horizontal: true},
-		{prompt: ' I find that a well ordered life with regular hours suits my temperament. ', options: SNFCq, required: true, horizontal: true,}, 
-		{prompt: ' I feel uncomfortable when I don’t understand the reason why an event occurred in my life.', options: SNFCq, required: true, horizontal: true},
-		{prompt: ' I feel irritated when one person disagrees with what everyone else in a group believes.', options: SNFCq, required: true, horizontal: true},
-    {prompt: ' I don’t like to go into a situation without knowing what I can expect from it.', options: SNFCq, required: true, horizontal: true,}, 
-    {prompt: ' When I have made a decision, I feel relieved.', options: SNFCq, required: true, horizontal: true},
-		{prompt: ' When I am confronted with a problem, I’m dying to reach a solution very quickly.', options: SNFCq, required: true, horizontal: true,}, 
-		{prompt: ' I would quickly become impatient and irritated if I would not find a solution to a problem immediately.', options: SNFCq, required: true, horizontal: true},
-		{prompt: ' I don’t like to be with people who are capable of unexpected actions', options: SNFCq, required: true, horizontal: true},
-    {prompt: ' I dislike it when a person’s statement could mean many different things.', options: SNFCq, required: true, horizontal: true,}, 
-		{prompt: ' I find that establishing a consistent routine enables me to enjoy life more. ', options: SNFCq, required: true, horizontal: true},
-		{prompt: ' I enjoy having a clear and structured mode of life.', options: SNFCq, required: true, horizontal: true,}, 
-		{prompt: ' I do not usually consult many different opinions before forming my own view.', options: SNFCq, required: true, horizontal: true},
-		{prompt: ' I dislike unpredictable situations.', options: SNFCq, required: true, horizontal: true},
-		],
-		    randomize_question_order: true,
-		    preamble: '<p style="text-align: left;font-size:28px;" Please indicate how much you agree or disagree with the items below. </p>'
-		};
+      { option: "Pays for professional acting lessons", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Lends her some money", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Gives her $1000", data: { type: 'Saintly', correct_response: 'f' } },
+      { option: "Takes her to auditions", data: { type: 'Saintly', correct_response: 'f' } },
 
 
-var B5= {type: 'survey-multi-choice',
-	questions: [
-			
-    {prompt: '<b> I see myself as Extraverted, enthusiastic </b>', options: B5q, required: true, horizontal: true,}, 
-		{prompt: '<b> I see myself as Critical, quarrelsome </b>', options: B5q, required: true, horizontal: true},
-		{prompt: '<b> I see myself as Dependable, self-disciplined. </b>', options: B5q, required: true, horizontal: true,}, 
-		{prompt: '<b>I see myself as Anxious, easily upset </b>', options: B5q, required: true, horizontal: true},
-		{prompt: '<b> I see myself as Open to new experiences, complex.</b>', options: B5q, required: true, horizontal: true},
-    {prompt: '<b> I see myself as Reserved, quiet.</b>', options: B5q, required: true, horizontal: true,}, 
-    {prompt: '<b> I see myself as Sympathetic, warm.</b>', options: B5q, required: true, horizontal: true},
-		{prompt: '<b> I see myself as Disorganized, careless.</b>', options: B5q, required: true, horizontal: true,}, 
-		{prompt: '<b> I see myself as Calm, emotionally stable.</b>', options: B5q, required: true, horizontal: true},
-		{prompt: '<b> I see myself as Conventional, uncreative. </b>', options: B5q, required: true, horizontal: true},
-		],
+      { option: "Copies a famous actor's brain chemistry", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Goes back in time to remake a movie", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Magically recreates the ring", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Uses psychic energy to win the lottery", data: { type: 'Impossible', correct_response: 'j' } },
+      { option: "Performs magic to get a role", data: { type: 'Impossible', correct_response: 'j' } },
 
-		    randomize_question_order: true,
-		    preamble: '<p style="text-align: left;font-size:28px" Here are a number of personality traits that may or may not apply to you. Please choose the options next to each statement to indicate the extent to which you agree or disagree with that statement. You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other. Show how much you agree with the items below. You can work quickly; your first feeling is generally best'
-		};
+      { option: "Mocks her goals", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Steals the ring", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Deliberately gives her bad advice", data: { type: 'Immoral', correct_response: 'f' } },
+      { option: "Prevents her from getting an acting job", data: { type: 'Immoral', correct_response: 'f' } },
+    ]);
 
-var PT= {type: 'survey-multi-choice',
-	questions: [
-			
-    {prompt: "<b> I sometimes find it difficult to see things from the 'other guys' point of view. </b>", options: PTq, required: true, horizontal: true,}, 
-		{prompt: '<b> I try to look at everybodys side of a disagreement before I make a decision. </b>', options: PTq, required: true, horizontal: true},
-		{prompt: '<b> I sometimes try to understand my friends better by imagining how things look from their perspective. </b>', options: PTq, required: true, horizontal: true,}, 
-		{prompt: '<b> If Im sure Im right about something, I dont waste much time listening to other peoples arguments.  </b>', options: PTq, required: true, horizontal: true},
-		{prompt: '<b> I believe that there are two sides to every question and try to look at them both.</b>', options: PTq, required: true, horizontal: true},
-    {prompt: '<b> When Im upset at someone, I usually try to "put myself in his shoes" for a while.</b>', options: PTq, required: true, horizontal: true,}, 
-    {prompt: '<b> Before criticizing somebody, I try to imagine how I would feel if I were in their place.</b>', options: PTq, required: true, horizontal: true},
-		],
+    var timepressure = jsPsych.randomization.sampleWithoutReplacement([0, 1], 1);
+    console.log('timepressure: ' + timepressure)
 
-		    randomize_question_order: true,
-		    preamble: '<p style="text-align: left;font-size:28px" The following statements inquire about your thoughts and feelings in a variety of situations. For each item, indicate how well it describes you by choosing the appropriate letter on the scale at the top of the page: A, B, C, D, or E. When you have decided on your answer, fill in the letter next to the item number. READ EACH ITEM CAREFULLY BEFORE RESPONDING. Answer as honestly as you can. Thank you.'
-		};
-    // ARELI CHECK HERE 
-var IRI_survey = {type: 'survey-multi-choice',
-	questions: [
-    {prompt: ' I daydream and fantasize, with some regularity, about things that might happen to me', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I often have tender, concerned feelings for people less fortunate than me', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I sometimes find it difficult to see things from the “other guy’s” point of view', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'Sometimes I don’t feel very sorry for other people when they are having problems', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I really get involved with the feelings of the characters in a novel', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'In emergency situations, I feel apprehensive and ill-at-ease', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I am usually objective when I watch a movie or play, and I don’t often get completely caught up in it', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I try to look at everyone’s side of a disagreement before I make a decision', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'When I see someone being taken advantage of, I feel kind of protective towards them', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I sometimes feel helpless when I am in the middle of a very emotional situation', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I sometimes try to understand my friends better by imagining how things look from their perspective', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'Being extremely involved in a good book or movie is somewhat rare for me', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'When I see someone get hurt, I tend to remain calm', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'Other people’s misfortunes do not usually disturb me a great deal', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'If I’m sure I’m right about something, I don’t waste much time listening to other people’s arguments', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'After seeing a play or movie, I have felt as though I were one of the characters', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'Being in a tense emotional situation scares me', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'When I see someone being treated unfairly, I sometimes don’t feel very much pity for them', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I am usually pretty effective in dealing with emergencies', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I am often quite touched by things that I see happen', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I believe that there are two sides to every question and try to look at them both', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I would describe myself as a pretty soft-hearted person', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'When I watch a good movie, I can very easily put myself in the place of a leading character', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'I tend to lose control during emergencies', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'When I’m upset at someone, I usually try to “put myself in his shoes” for a while', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'When I am reading an interesting story or novel, I imagine how I would feel if the events in the story were happening to me', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'When I see someone who badly needs help in an emergency, I go to pieces', options: IRIq, required: true, horizontal: true,},
-    {prompt: 'Before criticizing somebody, I try to imagine how I would feel if I were in their place', options: IRIq, required: true, horizontal: true,},
-		],
+    // END CHECK SECTION 
 
-		    randomize_question_order: false,
-		    preamble: '<p style="text-align: left;font-size:28px" Please indicate how well each statement describes you. Use the scale at the top of the page.'
-		};
+    /* Add all options-arrays to yet another array */
+    /* By doing this we have an ordered array containing all the scenarios, as well as an array containing all the options ordered like the scenarios*/
+    var options = [options1, options2, options3, options4, options5]
 
-var ART = {type: 'survey-multi-choice',
-	questions: [
-    {prompt: 'Sidney Sheldon', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Robert Jordan', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Dean Koontz', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'John Updike', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'José Saramago', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Danielle Steele', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Douglas Adams', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'John LeCarré', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'W. O. Mitchell', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Yukio Mishima', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Jackie Collins', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Anne McCaffrey', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Robert Ludlum', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Alice Munro', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Gabriel Garcia Marquez', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Judith Krantz', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'William Gibson', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Clive Cussler', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Maeve Binchy', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Albert Camus', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Nora Roberts', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Terry Brooks', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Sue Grafton', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Carol Shields', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Umberto Eco', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Iris Johansen', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Terry Goodkind', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Ian Rankin', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'John Irving', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Milan Kundera', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Diana Palmer', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Piers Anthony', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'P. D. James', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Toni Morrison', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Paulo Coelho', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Catherine Anderson', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Arthur C. Clarke', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'John Saul', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Amy Tan', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'W. G. Sebald', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Joy Fielding', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Ray Bradbury', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Patricia Cornwell', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Rohinton Mistry', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Italo Calvino', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Nicholas Sparks', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Ursula K. Le Guin', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Ken Follett', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Sinclair Ross', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Thomas Mann', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Stephen Hawking', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Roland Barthes', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Noam Chomsky', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Jack Canfield', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Faith Popcorn', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Stephen J. Gould', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'John Searle', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Norman Mailer', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Philip C. McGraw', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Jim Collins', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Richard Dawkins', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Jean Baudrillard', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Michael Moore', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'M. Scott Peck', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Napoleon Hill', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Thomas Kuhn', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Michel Foucault', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Eric Schlosser', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Robert Fulghum', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Robert T. Kiyosaki', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Ernst Mayr', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Bertrand Russell', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Bob Woodward', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Erma Bombeck', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Stephen C. Lundin', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Douglas Rushkoff', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Antonio Damasio', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Pierre Berton', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Jean Vanier', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Peter S. Pande', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Amir D. Aczel', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Daniel Goleman', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Naomi Klein', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Stephen R. Covey', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Kenneth H. Blanchard', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Matt Ridley', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Jeffrey Gray', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Naomi Wolf', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Melody Beattie', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Peter F. Drucker', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'John Maynard Smith', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Joseph LeDoux', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Robert D. Kaplan', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Deepak Chopra', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Barry Z. Posner', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Diane Ackerman', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Oliver Sacks', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Susan Sontag', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Marianne Williamson', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'M. D. Johnson Spencer', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Lauren Adamson', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'John Condry', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Martin Ford', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'James Morgan', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Eric Amsel', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Edward Cornell', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Harold Gardin', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Scott Paris', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Margaritia Azmitia', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Carl Corter', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Frank Gresham', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Richard Passman', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Oscar Barbarin', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Diane Cuneo', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Robert Inness', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'David Perry', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Reuben Baron', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Denise Daniels', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Frank Keil', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Miriam Sexton', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Gary Beauchamp', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Geraldine Dawson', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Reed Larson', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'K Warner Schaie', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Thomas Bever', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Aimee Dorr', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Lynn Liben', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Robert Siegler', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Elliot Blass', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'W Patrick Dickson', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Hugh Lytton', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Mark Strauss', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Dale Blyth', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Robert Emery', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Franklin Manis', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Alister Younger', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Hilda Borko', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Frances Fincham', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Morton Mendelson', options: ARTq, required: true, horizontal: true,},
-    {prompt: 'Steve Yussen', options: ARTq, required: true, horizontal: true,},
-		],
-    //  CHECK END 
-		    randomize_question_order: true,
-		    preamble: "<style>.jspsych-survey-multi-choice .jspsych-survey-multi-choice-question { text-align: center; } .jspsych-survey-multi-choice-horizontal { display: flex; justify-content: center; }</style>Below you will see a list of 140 names. Some of the people in the list are popular writers (of books, magazine articles, and/or newspaper columns), and some are not. You are the read the names and put a check mark next to the names of those individuals whom you know to be writers. Do not guess, but only check those whom you know to be writers. Remember, some of the names are people who are not popular writers, so guessing can be easily detected."
-		};
+    /* Creating a list of shuffled numbers, we will use this list to ensure scenarios and options are randomized in the same way*/
+    /* Essentially, we will randomize this list and access our scenarios & options through this list */
+    /* Note that this list should have the same length as the "scenarios" variable*/
+    var shuffledList = jsPsych.randomization.shuffle([0, 1, 2, 3, 4])
+    console.log('shuffledList: ' + shuffledList)
 
-var MI= {type: 'survey-multi-choice',
-	questions: [
-			
-    {prompt: '<b> I tend to imagine the consequences of my behavior that affect others.</b>', options: MIq, required: true, horizontal: true,}, 
-		{prompt: '<b> I think a lot about any moral problems that I my encounter in the future.</b>', options: MIq, required: true, horizontal: true},
-		{prompt: '<b> It is easy for me to imagine different solutions to important moral problems. </b>', options: MIq, required: true, horizontal: true,}, 
-		{prompt: '<b> Others come to me for advise on the moral problems they struggle with.</b>', options: MIq, required: true, horizontal: true},
-		{prompt: '<b> When reading fiction, or watching a movie, I often imagine what it is like to be in the shoes of the protagonist(s) and weigh the options that they have. </b>', options: MIq, required: true, horizontal: true},
-    {prompt: '<b> When I am uncertain how to proceed in a morally thorny situation, I first imagine all possible solutions, no matter how outrageous.</b>', options: MIq, required: true, horizontal: true,}, 
-    {prompt: '<b> When I have to make an important moral decision, I tend to imagine all possible objections against that decision.</b>', options: MIq, required: true, horizontal: true},
-		],
+    /* add the subject ID to my experiment  making it a property*/
+    jsPsych.data.addProperties({
+      subject: subject_id,
+      survey: surveyCode,
+      condition: timepressure,
+      brwser: browser,
+      operatingS: OS,
+      order: shuffledList
+    });
 
-		    randomize_question_order: true,
-		    preamble: '<p style="text-align: left;font-size:28px" Show how much you agree with the items below. You can work quickly; your first feeling is generally best'
-		};
+    /////////////////////////////////////////////////////
+    /* define instruction information */
 
-var MP= {type: 'survey-multi-choice',
-	questions: [
-			
-    {prompt: ' I believe that lying is necessary to maintain a competitive advantage over others.', options: MPq, required: true, horizontal: true,}, 
-		{prompt: ' The only good reason to talk to others is to get information that I can use to my benefit.', options: MPq, required: true, horizontal: true},
-		{prompt: ' I am willing to be unethical if I believe it will help me succeed. ', options: MPq, required: true, horizontal: true,}, 
-		{prompt: ' I am willing to sabotage the efforts of other people if they threaten my own goals.', options: MPq, required: true, horizontal: true},
-		{prompt: ' I would cheat if there was a low chance of getting caught. ', options: MPq, required: true, horizontal: true},
-    {prompt: ' I like to give the orders in interpersonal situations.', options: MPq, required: true, horizontal: true,}, 
-    {prompt: ' I enjoy having control over other people.', options: MPq, required: true, horizontal: true},
-    {prompt: ' I enjoy being able to control the situation.', options: MPq, required: true, horizontal: true},
-    {prompt: ' Status is a good sign of success in life.', options: MPq, required: true, horizontal: true},
-    {prompt: ' Accumulating wealth is an important goal for me.', options: MPq, required: true, horizontal: true},
-    {prompt: ' I want to be rich and powerful someday.', options: MPq, required: true, horizontal: true},
-    {prompt: ' People are only motivated by personal gain.', options: MPq, required: true, horizontal: true},
-    {prompt: ' I dislike committing to groups because I don’t trust others.', options: MPq, required: true, horizontal: true},
-    {prompt: ' Team members backstab each other all the time to get ahead.', options: MPq, required: true, horizontal: true},
-    {prompt: ' If I show any weakness at work, other people will take advantage of it.', options: MPq, required: true, horizontal: true},
-    {prompt: ' Other people are always planning ways to take advantage of the situation at my expense', options: MPq, required: true, horizontal: true},
-
-		],
-
-		randomize_question_order: true,
-		preamble: '<p style="text-align: left;font-size:28px" Show how much you agree with the items below. You can work quickly; your first feeling is generally best'
-		};
-
-
-////////////////////////////////////////////////////////////////
-/* define the procedure & order */
-/* determine which instuctions to show based on the timepressure variable*/
-if (timepressure == 0){
-  tl.push(gen_instructions_NOTIME);
-}
-
-if (timepressure == 1){
-  tl.push(gen_instructions_TIME);
-}
-
-tl.push(prac_instructions);
-/* Running the warm-up trials */
-/* Again depending on timepressure */
-
-for (var i = 0; i < practice.length; i++){
-  /* Show a warm-up trial */
-  /* Which type depends on timepressure */
-  if (timepressure == 0){
-    var display_warmup = {
-                type: "html-keyboard-response",
-                prompt: "<p style='text-align:bottom'>Press <b>[f]</b> for possible, press <b>[j]</b> for impossible.</p>",
-                choices: ['f','j'],
-                stimulus: practice[i], //jsPsych.timelineVariable("stimulus"),
-                post_trial_gap: 1000,
-    }
-  }
-  if (timepressure == 1){
-    var display_warmup = {
-                type: "html-keyboard-response",
-                prompt: "<p style='text-align:bottom'>Press <b>[f]</b> for possible, press <b>[j]</b> for impossible.</p>",
-                choices: ['f','j'],
-                stimulus: practice[i], //jsPsych.timelineVariable("stimulus"),
-                trial_duration: 1500,
-                post_trial_gap: 1000,
-    }
-  } 
-  tl.push(display_warmup);
-}
-
-
-/* tl.push(task_instructions);
-/* tl.push(read_instructions);
-/* Looping through all the scenarios */
-    /* Because we are indexing scenarios through shuffled list, the order is randomized */
-
-    for (var i = 0; i < shuffledList.length; i++){
-            /* Show a random scenario */
-            var display_scenarios = {
-                type: "html-keyboard-response",
-                stimulus: scenarios[shuffledList[i]], //jsPsych.timelineVariable("stimulus"),
-                choices: jsPsych.NO_KEYS,
-                trial_duration: 6500
-            }
-            tl.push(display_scenarios);
-
-            /*Display the scenario instructions*/
-            tl.push(scen_instructions)
-            
-            /*Looping through the options */
-            /* Because we are indexing the options through shuffled list, the correct options per scenario are displayed */
-            /* Pick a version based on timepressure */
-            if (timepressure == 0){
-              for (var j = 0; j < options[shuffledList[i]].length; j++){
-                  var display_options = {
-                      type: 'html-keyboard-response',
-                      prompt: "<p style='text-align:bottom'>Press <b>[f]</b> for possible, press <b>[j]</b> for impossible.</p>",
-                      choices: ['f','j'],
-                      post_trial_gap: 1200,
-                      stimulus: options[shuffledList[i]][j].option,
-                      data: {test_part: 'response', correct_response: jsPsych.timelineVariable('correct_response')}
-                  };
-                  tl.push(display_options)
-              }
-            }
-            if (timepressure == 1){
-              for (var j = 0; j < options[shuffledList[i]].length; j++){
-                  var display_options = {
-                      type: 'html-keyboard-response',
-                      prompt: "<p style='text-align:bottom'>Press <b>[f]</b> for possible, press <b>[j]</b> for impossible.</p>",
-                      choices: ['f','j'],
-                      trial_duration: 1500,
-                      post_trial_gap: 1200,
-                      stimulus: options[shuffledList[i]][j].option,
-                      data: {test_part: 'response', correct_response: jsPsych.timelineVariable('correct_response')}
-                  };
-                  tl.push(display_options)
-              }
-            }
-            /* We probably want to display something in between scenarios to "reset" the block, we can put that here */
-            if (i < shuffledList.length -1){
-              tl.push(interim_block)
-          }
-        };
-
-tl.push(SRPP);        
- tl.push(IRI_survey);
- tl.push(ART);
-//tl.push(SDO);
-tl.push(IR);
-tl.push(MEX);
-//tl.push(NFC);
-//tl.push(TA);
-//tl.push(PT);
-//tl.push(CC);
-tl.push(open_ended_instr);
-tl.push(OpenEnded);
-tl.push(demo_Age);
-tl.push(demo_gen);
-tl.push(demo_PolIQ);
-tl.push(demo_FinalQs);
-
-////////////////////////////////////////////////////////////////
-///* define debrief */
-
-// need to get actual sona (leave blank for now; set to a valid URL when ready)
-var finishURL = "";
-
-var debrief = {
-      type: "html-keyboard-response",
-      stimulus: "<p>Thank you for your participation!</p>" + 
-      '<div align=left>' +
-      "<p> You have reached the end of this research study conducted by dr. Wylie, Amsterdam Business School, University of Amsterdam (Netherlands) in collaboration with a team of international researchers.</p>" +
-      "<p> Thank you very much for your participation. Your answers are very valuable to us. The purpose of this study was to investigate how your judgments about what is possible or impossible relate to other habits of thought, like your creativity.</p>" +
-      "<p> You may decide that you do not want your data used in this research.  If you would like your data removed from the study and permanently deleted, please contact us via the address listed below. Whether you agree or do not agree to have your data used for this study, you will still receive course credit for your participation.</p>" +
-      "<p> If you would like to receive a copy of the final report of this study (or a summary of the findings) when it is completed, please feel free to contact the researcher(s) at g.g.vanhouwelingen@uva.nl.</p>" +
-      "<p> If you have any questions or concerns regarding this study, its purpose or procedures, or if you have a research-related problem, please feel free to contact the researcher(s) at g.g.vanhouwelingen@uva.nl, or you can send us a message via Prolific. </p>" +
-      "<p> Your identity will remain completely confidential. Because we are interested in the average responses of the entire group of participants, you will not be individually identified; additionally, you will be identified with a meaningless participant ID number only. </p>" +
-      "<p> The data collected from this study will be maintained in a password-protected computer database indefinitely in a restricted access area at University of Amsterdam, to which only the authorized researchers (dr. Gijs van Houwelingen) will have access for at least 7 years. </p>" +
-      "<p> De-identified data related to your participation may be submitted to an open access repository or journal (i.e., the data may be publicly available). " +
-      "<p> These data will be completely de-identified/anonymized prior to submission by removing all personally identifying information (names, email addresses, and certain identifying demographic information) before submission and will be presented in aggregate form in publications. </p>" +
-      "<p> This process is integral to the research process as it allows other researchers to verify results and avoid duplicating research. Other individuals may access these data by accessing the open access repository. Although the dataset without identifiers may be shared publicly, your identity will always remain confidential.</p>" +
-      "<p> This study has been reviewed and received ethics clearance through the Ethics Committee Economics and Business (EBEC), University of Amsterdam, under number EC 20210510030544. If you have questions for the Committee contact them at (31)20-5255311 or at secbs-abs@uva.nl. </p>" +
-      "<p> Finally, we urge you not to discuss this study with anyone else who is currently participating or might participate at a future point in time. As you can certainly appreciate, we will not be able to examine the research question with participants who know the details of the study beforehand. </p>" +
-      '</div><p></p>'+
-      "<p> Please press <b>ANY KEY</b> to continue to the redirect screen. If you are not redirected, you can close out of the window manually after your data has been uploaded.</p>",
-      post_trial_gap: 2000
+    var gen_instructions_NOTIME = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus:
+        "<p><strong>You will now begin the experiment! Please read the following instructions carefully:</p></strong>" +
+        "<p>The experiment consists of different blocks. In each block you will first be confronted with a specific scenario. You will then be shown several potential responses to that scenario. We would like you to tell us whether the response you see is <b>possible</b> or whether that response would be <b>impossible</b> in that particular situation.</p>" +
+        "<p>To indicate that something is possible, press the <b>[f]</b> key; to indicate that something is NOT possible, please press the <b>[j]</b> key.</p>" +
+        "<p><b>There is no timelimit for this task, so please carefully deliberate on the possibility of each response.</b></p>" +
+        "<p>***Please pay close attention!***</p>" +
+        "<p>Before starting the main experiment we will first start with a warm-up session.</p>" +
+        '<p></p>' +
+        '<p></p>' +
+        "<p>Press the SPACE BAR to continue.</p>",
+      choices: [' '],
+      data: { stimulus: 'instructions' },
     };
-tl.push(debrief);
 
-////////////////////////////////////////////////////////////////
-/* start the experiment & end pavlovia */
 
-/* finish connection with pavlovia.org */
-var pavlovia_finish = {
-  type: "pavlovia",
-  command: "finish",
-  participantId: surveyCode,
-    // Thomas Pronk; your filter function here
-    dataFilter: function(data) {
-          // Printing the data received from jsPsych.data.get().csv(); a CSV data structure
-          console.log(data);
-          // You can also access the data directly, for instance getting it as JSON
-          console.log(jsPsych.data.get().csv());
-          // Return whatever data you'd like to store
-          return data;
-      },
-      // Thomas Pronk; call this function when we're done with the experiment and data reception has been confirmed by Pavlovia
-      completedCallback: function() {
-        if (finishURL && finishURL.length > 0) {
-          window.location.replace(finishURL);
-        } else {
-          console.log('Pavlovia finished — no finishURL set.');
+    var gen_instructions_TIME = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus:
+        "<p>You will now begin the experiment! Please read the following instructions carefully:</p>" +
+        "<p>The experiment consists of different blocks. In each block, you will first be confronted with a specific scenario and subsequently, with several possible responses to that scenario. We would like you to tell us whether these different responses are either a possible or an impossible response to the situation described in the scenario.</p>" +
+        "<p>To indicate that it is true that something is possible, press the <b>[f]</b> key; to indicate that something is NOT possible, please press the <b>[j]</b> key.</p>" +
+        "<p><b>You will have to make these decisions under time pressure and will have to respond very quickly before the text disappears. </b></p>" +
+        "<p>***Please pay close attention!***</p>" +
+        "<p>Before starting the main experiment we will first start with a warm-up session.</p>" +
+        '<p></p>' +
+        '<p></p>' +
+        "<p>Press the SPACE BAR to continue.</p>",
+      choices: [' '],
+      data: { stimulus: 'instructions' },
+    };
+
+    var prac_instructions = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus:
+        '<div align=left>' +
+        "We will now begin with a warm-up phase." +
+        "<p>On these trials, please press <b>[f]</b> if you see the word 'Possible' and <b>[j]</b> if you see the word 'Impossible' as quickly as possible</p>" +
+        '</div><p></p>' +
+        "<p>Press the SPACE BAR to begin the warm-up.</p>",
+      choices: [' '],
+      data: { stimulus: 'instructions' },
+    };
+
+    var task_instructions = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "Great! We will now being the main task. You will first see a scenario to read and then will be judging whether different actions are possible <b>(f key)</b> or impossible <b>(j key)</b>." +
+        "<p>***Please answer as accurately as you possibly can.***</p>" +
+        "<p>Press the SPACE BAR to continue.</p>",
+      choices: [' '],
+      data: { stimulus: 'instructions' },
+    };
+
+    var read_instructions = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "Please read the following scenario. The scenario will be displayed for 5 seconds." +
+        "<p>Press the SPACE BAR to continue.</p>",
+      choices: [' '],
+      data: { stimulus: 'instructions' },
+    };
+
+    var scen_instructions = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "Given the scenario you just read, please tell us whether it is possible or impossible to do the following actions." +
+        "<p> Press the SPACE BAR when you are ready to begin.</p>",
+      choices: [' '],
+      data: { stimulus: 'instructions' },
+    };
+
+    var interim_block = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "Great! You have completed a block." +
+        "<p> Press the SPACE BAR to begin the next block.</p>",
+      choices: [' '],
+      data: { stimulus: 'instructions' },
+    };
+
+    /////////////////////////////////////////////////////
+    /* define survey information */
+    // option + command + arrow key in VSCode give you multiline edits
+
+
+    var NFCq = ["Extremely uncharacteristic", "Somewhat uncharacteristic", "Uncertain", "Somewhat characteristic", "Extremely characteristic"];
+    var TAq = ["Strongly disagree", "Disagree", "Somewhat disagree", "Neither agree nor disagree", "Somewhat agree", "Agree", "Strongly agree"];
+    var CCq = ["Strongly disagree", "Disagree", "Somewhat disagree", "Neither agree nor disagree", "Somewhat agree", "Agree", "Strongly agree"];
+    var Genderq = ["Man", "Woman", "Non-binary", "Other", "Prefer not to answer"];
+    var Eduq = ["Some high school", "High school degree", "Some college", "Associates Degree", "Bachelors degree", "Graduate degree"];
+    var PolIDq = ["1 = Extremely Liberal", "2", "3", "4 = Neither", "5", "6", "7 = Extremely Conservative"];
+    var Relq = ["1 = Not at all Religious", "2", "3", "4", "5", "6", "7 = Extremely Religious"];
+    var Incomeq = ["Less than $10,000 USD a year", "$10,000 - $20,000 USD", "$20,000-$40,000 USD", "$40,000-$60,000 USD", "$60,000-$80,000 USD", "$80,000-$100,000 USD", "$100,000 USD a year or more"];
+    var Raceq = ["White, not hispanic or latinx", "Black or African American", "Asian", "American Indian or Alaska Native", "Native Hawaiian or Other Pacific Islander", "Hispanic or Latinx", "Two or more", "Not listed"];
+    var Demand1q = ["1 = Not at all", "2", "3", "4", "5 = Very much so"];
+    var compTypeq = ["Laptop/Desktop", "Ipad/Tablet", "Other"];
+    var SDOq = ["Strongly oppose", "Somewhat oppose", "Slightly oppose", "Neutral", "Slightly favor", "Somewhat favor", "Strongly favor"];
+    var IRq = ["Strongly disagree", "Disagree", "Neither disagree nor agree", "Agree", "Strongly agree"];
+    var UCCq = ["Strongly disagree", "Disagree", "Somewhat disagree", "Neither disagree nor agree", "Somewhat agree", "Agree", "Strongly agree"];
+    var MEXq = ["Inner circle of moral concern", "Outer circle of moral concern", "Fringes of moral concern", "Outside the moral boundary"];
+    var GIq = ["Very inaccurate", "Moderately inaccurate", "Slightly inaccurate", "Slightly accurate", "Moderately accurate", "Very accurate"];
+    var SRPPq = ["Strongly oppose", "Somewhat oppose", "Slightly oppose", "Neither oppose nor support", "Slightly support", "Somewhat support", "Strongly support"];
+    var SNFCq = ["Completely disagree", "Disagree", " Slightly Disagree ", " Slightly Agree ", "Agree", "Completely agree"]; //need for closure
+    var B5q = ["Completely disagree", "Disagree", " Slightly Disagree ", " Slightly Agree ", "Agree", "Completely agree"];
+    var PTq = ["1 = Does not describe me very well", "2", "3", "4", " 5 = Describe me well "];
+    var IRIq = ["1 = Does not describe me very well", "2", "3", "4", "5 = Describes me very well"];
+    var ARTq = ["Yes", "No"];
+    var MIq = ["Completely disagree", "Disagree", " Slightly Disagree ", " Slightly Agree ", "Agree", "Completely agree"];
+    var MPq = ["Completely disagree", "Disagree", " Slightly Disagree ", " Slightly Agree ", "Agree", "Completely agree"];
+
+
+    // Areli CHECK HERE 
+    var SRPP = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: "<b>Universal Healthcare or Medicare for all</b>", options: SRPPq, required: true, horizontal: true, },
+        { prompt: '<b>Debt forgiveness</b>', options: SRPPq, required: true, horizontal: true },
+        { prompt: '<b>Green New Deal</b>', options: SRPPq, required: true, horizontal: true, },
+        { prompt: '<b>Abolish Immigration and Customs Enforcement (ICE)</b>', options: SRPPq, required: true, horizontal: true },
+        { prompt: '<b>Abolish police</b>', options: SRPPq, required: true, horizontal: true },
+        { prompt: '<b>Complete criminal justice reform</b>', options: SRPPq, required: true, horizontal: true, },
+        { prompt: '<b>Decriminalizing sex work</b>', options: SRPPq, required: true, horizontal: true },
+        { prompt: '<b>Expansion of public markets </b>', options: SRPPq, required: true, horizontal: true, },
+        { prompt: "<b>Decrease military spending/demilitarization</b>", options: SRPPq, required: true, horizontal: true },
+        { prompt: '<b>Free market regulation</b>', options: SRPPq, required: true, horizontal: true },
+        { prompt: '<b>Tax the rich</b>', options: SRPPq, required: true, horizontal: true, },
+        { prompt: '<b>Limit the accumulation of private property</b>', options: SRPPq, required: true, horizontal: true },
+        { prompt: '<b>Nationalize big businesses</b>', options: SRPPq, required: true, horizontal: true, },
+        { prompt: '<b>Expand unemployment</b>', options: SRPPq, required: true, horizontal: true },
+        { prompt: '<b>Increase funding for school</b>', options: SRPPq, required: true, horizontal: true },
+        { prompt: '<b>Legalize marijuana</b>', options: SRPPq, required: true, horizontal: true, },
+        { prompt: '<b>Legalize all drug use</b>', options: SRPPq, required: true, horizontal: true },
+      ],
+
+      randomize_question_order: true,
+      preamble: "Please rate the extent to which you support (or not support) the policies listed below. You can work quickly; your first feeling is generally best."
+    };
+    // CHECK END 
+
+    var SDO = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: '<b>An ideal society requires some groups to be on top and others to be on the bottom</b>', options: SDOq, required: true, horizontal: true, },
+        { prompt: '<b>Some groups of people are simply inferior to other groups</b>', options: SDOq, required: true, horizontal: true },
+        { prompt: '<b>No one group should dominate in society</b>', options: SDOq, required: true, horizontal: true, },
+        { prompt: '<b>Groups at the bottom are just as deserving as groups at the top</b>', options: SDOq, required: true, horizontal: true },
+        { prompt: '<b>Group equality should not be our primary goal</b>', options: SDOq, required: true, horizontal: true },
+        { prompt: '<b>It is unjust to try to make groups equal</b>', options: SDOq, required: true, horizontal: true },
+        { prompt: '<b>We should do what we can to equalize conditions for different groups</b>', options: SDOq, required: true, horizontal: true },
+        { prompt: '<b>We should work to give all groups an equal chance to succeed</b>', options: SDOq, required: true, horizontal: true }
+      ],
+      randomize_question_order: true,
+      preamble: "Show how much you favor or oppose each idea below. You can work quickly; your first feeling is generally best."
+    };
+
+    var GI = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: 'I am lost in imagination most of the time', options: GIq, required: true, horizontal: true, },
+        { prompt: 'I find myself lost in imagination very frequently', options: GIq, required: true, horizontal: true },
+        { prompt: 'I find myself daydreaming often', options: GIq, required: true, horizontal: true, },
+        { prompt: 'I spend much of my time daydreaming', options: GIq, required: true, horizontal: true },
+        { prompt: 'I get lost in my fantasies', options: GIq, required: true, horizontal: true },
+        { prompt: 'I get lost in thoughts that aren’t related to what’s going on around me ', options: GIq, required: true, horizontal: true },
+        { prompt: 'Sometimes it is as though I wake up from daydreaming', options: GIq, required: true, horizontal: true },
+        { prompt: 'My mind wanders in unpredictable ways', options: GIq, required: true, horizontal: true },
+        { prompt: 'I often fantasize about impossible things', options: GIq, required: true, horizontal: true },
+        { prompt: 'Imagining my future makes me feel blue', options: GIq, required: true, horizontal: true },
+        { prompt: 'I become depressed when imagining my future', options: GIq, required: true, horizontal: true },
+        { prompt: 'Imagining things in the future makes me fearful', options: GIq, required: true, horizontal: true },
+        { prompt: 'The things I imagine make me sad', options: GIq, required: true, horizontal: true },
+        { prompt: 'My fantasies lead to negative emotions', options: GIq, required: true, horizontal: true },
+        { prompt: 'I visualize negative outcomes for the future of the world', options: GIq, required: true, horizontal: true },
+        { prompt: 'My daydreams are unpleasant', options: GIq, required: true, horizontal: true },
+        { prompt: 'My fantasies are less detailed than most peoples’ ', options: GIq, required: true, horizontal: true },
+        { prompt: 'Most people seem to have more complex imaginations than me', options: GIq, required: true, horizontal: true },
+        { prompt: 'My imaginings are not very complex', options: GIq, required: true, horizontal: true },
+        { prompt: 'My fantasies do not involve many details', options: GIq, required: true, horizontal: true },
+        { prompt: 'I have difficulty picturing the details of a situation I have not previously experienced', options: GIq, required: true, horizontal: true },
+        { prompt: 'My daydreams have a clear goal', options: GIq, required: true, horizontal: true },
+        { prompt: 'My daydreams are directed towards a specific outcome', options: GIq, required: true, horizontal: true },
+        { prompt: 'My fantasies are quite purposeful', options: GIq, required: true, horizontal: true },
+        { prompt: 'There is a purpose for my fantasies', options: GIq, required: true, horizontal: true },
+        { prompt: 'When I imagine my future, I like to plan its details', options: GIq, required: true, horizontal: true },
+      ],
+      randomize_question_order: true,
+      preamble: "Show how much you associate with the items below. You can work quickly; your first feeling is generally best."
+    };
+
+    // Areli CHECK HERE 
+    var IR = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: ' A good author can make me believe anything from dragons to space travel ', options: IRq, required: true, horizontal: true, },
+        { prompt: ' The hero of a story should be a moral person.', options: IRq, required: true, horizontal: true },
+        { prompt: ' It makes me uncomfortable when my favorite character commits moral violations as if they were no big deal.', options: IRq, required: true, horizontal: true, },
+        { prompt: ' Reading books where bad things are depicted as morally acceptable makes me feel dirty.', options: IRq, required: true, horizontal: true },
+        { prompt: ' I just cant go along with a story when it violates my beliefs about morality.', options: IRq, required: true, horizontal: true },
+        { prompt: ' At times it feels like the author of a book is asking me to endorse actions that I know are wrong.', options: IRq, required: true, horizontal: true },
+        { prompt: ' I sometimes cannot go along with a story when the “good” characters do morally reprehensible things.', options: IRq, required: true, horizontal: true },
+        { prompt: ' I would be uncomfortable reading a book in which the protagonist thought it was okay to kill people ', options: IRq, required: true, horizontal: true },
+        { prompt: ' I really dont buy into stories that are full of werewolves and witches', options: IRq, required: true, horizontal: true },
+        { prompt: ' Sympathizing with immoral characters makes me feel immoral myself.', options: IRq, required: true, horizontal: true },
+        { prompt: ' I dont like books where bad things are presented as the right thing to do.', options: IRq, required: true, horizontal: true },
+        { prompt: ' I usually avoid books that have the good guys acting in ways that are morally unacceptable.', options: IRq, required: true, horizontal: true },
+        { prompt: ' Being asked to imagine morally repugnant things makes me uncomfortable.', options: IRq, required: true, horizontal: true },
+        { prompt: ' I would be uncomfortable reading a story in which the author endorsed torture.', options: IRq, required: true, horizontal: true },
+        { prompt: ' I just cant go along with a story when it violates the rules of physics.', options: IRq, required: true, horizontal: true }
+      ],
+      randomize_question_order: true,
+      preamble: " Show how much you agree with the items below. You can work quickly; your first feeling is generally best"
+    };
+
+    // CHECK END 
+    var UCC = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: '<b> I find effective solutions by combining multiple ideas  </b>', options: UCCq, required: true, horizontal: true, },
+        { prompt: '<b> While working on something, I try to generate as many ideas as possible </b>', options: UCCq, required: true, horizontal: true },
+        { prompt: '<b> I try to act out potential solutions to explore their effectiveness </b>', options: UCCq, required: true, horizontal: true, },
+        { prompt: '<b> If I get stuck on a problem, I try to take a different perspective of the situation</b>', options: UCCq, required: true, horizontal: true },
+        { prompt: '<b> Incorporating previous solutions in new ways leads to good ideas</b>', options: UCCq, required: true, horizontal: true }
+      ],
+      randomize_question_order: true,
+      preamble: " Show how much you agree with the items below. You can work quickly; your first feeling is generally best"
+    };
+    // Areli CHECK HERE 
+    var MEX = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: '<b> Family member</b>', options: MEXq, required: true, horizontal: true, },
+        { prompt: '<b> American Citizen </b>', options: MEXq, required: true, horizontal: true },
+        { prompt: '<b> Somebody with different religious beliefs</b>', options: MEXq, required: true, horizontal: true, },
+        { prompt: '<b> Charity/aid worker</b>', options: MEXq, required: true, horizontal: true },
+        { prompt: '<b> Mentally challenged individual</b>', options: MEXq, required: true, horizontal: true },
+        { prompt: '<b> Murderer </b>', options: MEXq, required: true, horizontal: true, },
+        { prompt: '<b> Dolphin</b>', options: MEXq, required: true, horizontal: true },
+        { prompt: '<b> Fish</b>', options: MEXq, required: true, horizontal: true, },
+        { prompt: '<b> Apple Tree </b>', options: MEXq, required: true, horizontal: true },
+        { prompt: '<b> Family member</b>', options: MEXq, required: true, horizontal: true, },
+        { prompt: '<b> Old-growth forest</b>', options: MEXq, required: true, horizontal: true }],
+
+      // CHECK END 
+      randomize_question_order: true,
+      preamble: "Below please consider the level of moral concern you have for each of the entities." +
+        "We would like you to place them into one of the four boundaries of moral concern. Please read these descriptions carefully before making your decisions." +
+        "Inner circle of moral concern: These entities deserve the highest level of moral concern and standing. You have a moral obligation to ensure their welfare and feel a sense of personal responsibility for their treatment." +
+        "Outer circle of moral concern: These entities deserve moderate moral concern and standing. You concerned about their moral treatment; however, your sense of obligation and personal responsibility is greatly reduced." +
+        "Fringes of moral concern: These entities deserve the minimal moral concern and standing, but you are not moral obligated or personally responsible for their moral treatment." +
+        "Outside the moral boundary: These entities deserve no moral concern or standing, feeling concerned or personal responsibility for their moral treatment is extreme or nonsensical." +
+        '<img src="jsPsych/examples/img/MEX.jpg" style="width:400px;"></img>'
+    };
+
+    var OpenEnded = {
+      type: jsPsychSurveyText,
+      questions: [
+        {
+          prompt: "Name as many different ways you can think of to become a better person</p>",
+          rows: 6, columns: 40
+        }
+      ],
+      on_finish: function (data) {
+        data.response_json = JSON.stringify(data.response);
+      }
+    };
+
+    var NFC = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I would prefer complex to simple problems.</b></p>', options: NFCq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I like to have the responsibility of handling a situation that requires a lot of thinking.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>Thinking is not my idea of fun.</b></p>', options: NFCq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I would rather do something that requires little thought than something that is sure to challenge my thinking abilities.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I try to anticipate and avoid situations where there is a likely chance I will have to think in depth about something.</b></p>', options: NFCq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I find satisfaction in deliberating hard and for long hours.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I only think as hard as one has to.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I prefer to think about small, daily projects to long-term ones.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I like tasks that require little thought once Ive learned them.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>The idea of relying on thought to make my way to the top appeals to me.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I really enjoy a task that involves coming up with new solutions to problems.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>Learning new ways to think doesnt excite me very much. </b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I prefer my life to be filled with puzzles that I must solve.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>The notion of thinking abstractly is appealing to me.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I would prefer a task that is intellectual, difficult, and important to one than is somewhat important but does not require much thought.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I feel relief rather than satisfaction after completing a task that required a lot of mental effort.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>It is enough for me that something gets the job done. I dont care how or why it works.</b></p>', options: NFCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I usually end up deliberating about issues even when they do not affect me personally.</b></p>', options: NFCq, required: true, horizontal: true }
+      ],
+      randomize_question_order: true,
+      preamble: 'Please indicate how much you agree with each of the following statements, or how true it is about you using the scale provided:',
+      scale_width: 500
+    };
+
+    var TA = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I do not tolerate ambiguous situations well.</b></p>', options: TAq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I would rather avoid solving a problem that must be viewed from several different perspectives.</b></p>', options: TAq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I try to avoid situations that are ambiguous.</b></p>', options: TAq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I prefer familiar situations to new ones.</b></p>', options: TAq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>Problems that cannot be considered from just one point of view are a little threatening.</b></p>', options: TAq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I avoid situations that are too complicated for me to easily understand.</b></p>', options: TAq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I am tolerant of ambiguous situations.</b></p>', options: TAq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I enjoy tackling problems that are complex enough to be ambiguous.</b></p>', options: TAq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I try to avoid problems that do not seem to have only one <i>best</i> solution.</b></p>', options: TAq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I generally prefer novelty over familiarity.</b></p>', options: TAq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I dislike ambiguous situations.</b></p>', options: TAq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I find it hard to make a choice when the outcome is uncertain.</b></p>', options: TAq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I prefer a situation in which there is some ambiguity.</b></p>', options: TAq, required: true, horizontal: true }
+      ],
+      randomize_question_order: true,
+      scale_width: 500,
+      preamble: 'Please indicate how much you agree with each of the following statements, or how true it is about you using the scale provided:'
+    };
+
+    var CC = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I find effective solutions by combining multiple ideas.</b></p>', options: CCq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>While working on something, I try to generate as many ideas as possible.</b></p>', options: CCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>I try to act out potential solutions to explore their effectiveness.</b></p>', options: CCq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>If I get stuck on a problem, I try to take a different perspective of the situation.</b></p>', options: CCq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;"><b>Incorporating previous solutions in new ways leads to good ideas.</b></p>', options: CCq, required: true, horizontal: true, }],
+      randomize_question_order: true,
+      scale_width: 500,
+      preamble: 'Please indicate how much you agree with each of the following statements, or how true it is about you using the scale provided:'
+    };
+
+    var demo_Age = {
+      type: jsPsychSurveyText,
+      questions: [
+        { prompt: 'How old are you?', columns: 3, required: true, name: 'Age' },
+        { prompt: 'What is your religious affiliation?', columns: 50, name: 'Religious Affiliation' }
+      ],
+      randomize_question_order: true
+    };
+
+    var demo_gen = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: '<p style="text-align: left;font-size:18px;">What is your Gender?</p>', options: Genderq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;">Which of the following items BEST describes your ethnic or racial background?</p>', options: Raceq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;">How religious would you consider yourself?</p>', options: Relq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;">What is your household income?</p>', options: Incomeq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;">What is the highest degree or level of school you have completed?</p>', options: Eduq, required: true, horizontal: true }
+      ],
+      randomize_question_order: true,
+      scale_width: 500,
+      preamble: '<p style="text-align: left;font-size:28px;"Using the scales provided, please respond to each question about you as an individual.</p>'
+    };
+
+    var demo_PolIQ = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: '<p style="text-align: left;font-size:18px;">Which response best captures your political beliefs surrounding economic issues?</p>', options: PolIDq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;">Which response best captures your political beliefs surrounding social issues?</p>', options: PolIDq, required: true, horizontal: true },
+        { prompt: '<p style="text-align: left;font-size:18px;">When it comes to overall political issues, you consider yourself to be a:</p>', options: PolIDq, required: true, horizontal: true, }
+      ],
+      randomize_question_order: true,
+      scale_width: 500,
+      preamble: '<p style="text-align: left;font-size:28px;"Please answer the following questions about your political ideology.</p>'
+    };
+
+    var demo_FinalQs = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: '<p style="text-align: left;font-size:18px;">What kind of device did you use to complete this study?</p>', options: compTypeq, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;">Did you feel pressure to respond in a particular way to any of the questions?</p>', options: Demand1q, required: true, horizontal: true, },
+        { prompt: '<p style="text-align: left;font-size:18px;">Did you feel as though you might be judged for your responses to the questions you answered.</p>', options: Demand1q, required: true, horizontal: true }
+      ],
+      randomize_question_order: true,
+      scale_width: 500,
+      preamble: '<p style="text-align: left;font-size:28px;"For these final questions, please answer as honestly as you can! The answers to these questions will not affect whether or not you receive credit/payment for participation!</p>'
+    };
+
+
+    var open_ended_instr = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus:
+        "<p>We are interested in how people think about personal development. Specifically, imagine that</p>" +
+        "<p><strong>become a better person</strong>is someone's life goal for the next year.</p>" +
+        "<p>Please name as many different activities or ways that a person could achieve this goal within the next 2 minutes.</p>" +
+        "<p><b>There is no timelimit for this task, so please carefully deliberate on the possibility of each response.</b></p>" +
+        "<p>You can name either specific activities projects (e.g., practice meditation) or more general intentions (e.g., be kinder to animals).</p>" +
+        "<p>Your answer may, but do not have to, reflect these examples.</p>" +
+        '<p></p>' +
+        '<p></p>' +
+        "<p>Press the SPACE BAR to continue.</p>",
+      choices: [' '],
+      data: { stimulus: 'instructions' },
+    };
+
+    //need for closure
+
+    var SNFC = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+
+        { prompt: ' I don’t like situations that are uncertain.', options: SNFCq, required: true, horizontal: true, },
+        { prompt: ' I dislike questions which could be answered in many different ways. ', options: SNFCq, required: true, horizontal: true },
+        { prompt: ' I find that a well ordered life with regular hours suits my temperament. ', options: SNFCq, required: true, horizontal: true, },
+        { prompt: ' I feel uncomfortable when I don’t understand the reason why an event occurred in my life.', options: SNFCq, required: true, horizontal: true },
+        { prompt: ' I feel irritated when one person disagrees with what everyone else in a group believes.', options: SNFCq, required: true, horizontal: true },
+        { prompt: ' I don’t like to go into a situation without knowing what I can expect from it.', options: SNFCq, required: true, horizontal: true, },
+        { prompt: ' When I have made a decision, I feel relieved.', options: SNFCq, required: true, horizontal: true },
+        { prompt: ' When I am confronted with a problem, I’m dying to reach a solution very quickly.', options: SNFCq, required: true, horizontal: true, },
+        { prompt: ' I would quickly become impatient and irritated if I would not find a solution to a problem immediately.', options: SNFCq, required: true, horizontal: true },
+        { prompt: ' I don’t like to be with people who are capable of unexpected actions', options: SNFCq, required: true, horizontal: true },
+        { prompt: ' I dislike it when a person’s statement could mean many different things.', options: SNFCq, required: true, horizontal: true, },
+        { prompt: ' I find that establishing a consistent routine enables me to enjoy life more. ', options: SNFCq, required: true, horizontal: true },
+        { prompt: ' I enjoy having a clear and structured mode of life.', options: SNFCq, required: true, horizontal: true, },
+        { prompt: ' I do not usually consult many different opinions before forming my own view.', options: SNFCq, required: true, horizontal: true },
+        { prompt: ' I dislike unpredictable situations.', options: SNFCq, required: true, horizontal: true },
+      ],
+      randomize_question_order: true,
+      preamble: '<p style="text-align: left;font-size:28px;" Please indicate how much you agree or disagree with the items below. </p>'
+    };
+
+
+    var B5 = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+
+        { prompt: '<b> I see myself as Extraverted, enthusiastic </b>', options: B5q, required: true, horizontal: true, },
+        { prompt: '<b> I see myself as Critical, quarrelsome </b>', options: B5q, required: true, horizontal: true },
+        { prompt: '<b> I see myself as Dependable, self-disciplined. </b>', options: B5q, required: true, horizontal: true, },
+        { prompt: '<b>I see myself as Anxious, easily upset </b>', options: B5q, required: true, horizontal: true },
+        { prompt: '<b> I see myself as Open to new experiences, complex.</b>', options: B5q, required: true, horizontal: true },
+        { prompt: '<b> I see myself as Reserved, quiet.</b>', options: B5q, required: true, horizontal: true, },
+        { prompt: '<b> I see myself as Sympathetic, warm.</b>', options: B5q, required: true, horizontal: true },
+        { prompt: '<b> I see myself as Disorganized, careless.</b>', options: B5q, required: true, horizontal: true, },
+        { prompt: '<b> I see myself as Calm, emotionally stable.</b>', options: B5q, required: true, horizontal: true },
+        { prompt: '<b> I see myself as Conventional, uncreative. </b>', options: B5q, required: true, horizontal: true },
+      ],
+
+      randomize_question_order: true,
+      preamble: '<p style="text-align: left;font-size:28px" Here are a number of personality traits that may or may not apply to you. Please choose the options next to each statement to indicate the extent to which you agree or disagree with that statement. You should rate the extent to which the pair of traits applies to you, even if one characteristic applies more strongly than the other. Show how much you agree with the items below. You can work quickly; your first feeling is generally best'
+    };
+
+    var PT = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+
+        { prompt: "<b> I sometimes find it difficult to see things from the 'other guys' point of view. </b>", options: PTq, required: true, horizontal: true, },
+        { prompt: '<b> I try to look at everybodys side of a disagreement before I make a decision. </b>', options: PTq, required: true, horizontal: true },
+        { prompt: '<b> I sometimes try to understand my friends better by imagining how things look from their perspective. </b>', options: PTq, required: true, horizontal: true, },
+        { prompt: '<b> If Im sure Im right about something, I dont waste much time listening to other peoples arguments.  </b>', options: PTq, required: true, horizontal: true },
+        { prompt: '<b> I believe that there are two sides to every question and try to look at them both.</b>', options: PTq, required: true, horizontal: true },
+        { prompt: '<b> When Im upset at someone, I usually try to "put myself in his shoes" for a while.</b>', options: PTq, required: true, horizontal: true, },
+        { prompt: '<b> Before criticizing somebody, I try to imagine how I would feel if I were in their place.</b>', options: PTq, required: true, horizontal: true },
+      ],
+
+      randomize_question_order: true,
+      preamble: '<p style="text-align: left;font-size:28px" The following statements inquire about your thoughts and feelings in a variety of situations. For each item, indicate how well it describes you by choosing the appropriate letter on the scale at the top of the page: A, B, C, D, or E. When you have decided on your answer, fill in the letter next to the item number. READ EACH ITEM CAREFULLY BEFORE RESPONDING. Answer as honestly as you can. Thank you.'
+    };
+    // ARELI CHECK HERE 
+    var IRI_survey = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: ' I daydream and fantasize, with some regularity, about things that might happen to me', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I often have tender, concerned feelings for people less fortunate than me', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I sometimes find it difficult to see things from the “other guy’s” point of view', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'Sometimes I don’t feel very sorry for other people when they are having problems', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I really get involved with the feelings of the characters in a novel', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'In emergency situations, I feel apprehensive and ill-at-ease', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I am usually objective when I watch a movie or play, and I don’t often get completely caught up in it', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I try to look at everyone’s side of a disagreement before I make a decision', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'When I see someone being taken advantage of, I feel kind of protective towards them', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I sometimes feel helpless when I am in the middle of a very emotional situation', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I sometimes try to understand my friends better by imagining how things look from their perspective', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'Being extremely involved in a good book or movie is somewhat rare for me', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'When I see someone get hurt, I tend to remain calm', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'Other people’s misfortunes do not usually disturb me a great deal', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'If I’m sure I’m right about something, I don’t waste much time listening to other people’s arguments', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'After seeing a play or movie, I have felt as though I were one of the characters', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'Being in a tense emotional situation scares me', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'When I see someone being treated unfairly, I sometimes don’t feel very much pity for them', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I am usually pretty effective in dealing with emergencies', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I am often quite touched by things that I see happen', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I believe that there are two sides to every question and try to look at them both', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I would describe myself as a pretty soft-hearted person', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'When I watch a good movie, I can very easily put myself in the place of a leading character', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I tend to lose control during emergencies', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'When I’m upset at someone, I usually try to “put myself in his shoes” for a while', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'When I am reading an interesting story or novel, I imagine how I would feel if the events in the story were happening to me', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'When I see someone who badly needs help in an emergency, I go to pieces', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'Before criticizing somebody, I try to imagine how I would feel if I were in their place', options: IRIq, required: true, horizontal: true, },
+      ],
+
+      randomize_question_order: false,
+      preamble: '<p style="text-align: left;font-size:28px" Please indicate how well each statement describes you. Use the scale at the top of the page.'
+    };
+
+    var ART = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        { prompt: 'Sidney Sheldon', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Robert Jordan', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Dean Koontz', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'John Updike', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'José Saramago', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Danielle Steele', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Douglas Adams', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'John LeCarré', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'W. O. Mitchell', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Yukio Mishima', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Jackie Collins', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Anne McCaffrey', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Robert Ludlum', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Alice Munro', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Gabriel Garcia Marquez', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Judith Krantz', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'William Gibson', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Clive Cussler', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Maeve Binchy', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Albert Camus', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Nora Roberts', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Terry Brooks', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Sue Grafton', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Carol Shields', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Umberto Eco', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Iris Johansen', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Terry Goodkind', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Ian Rankin', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'John Irving', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Milan Kundera', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Diana Palmer', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Piers Anthony', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'P. D. James', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Toni Morrison', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Paulo Coelho', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Catherine Anderson', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Arthur C. Clarke', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'John Saul', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Amy Tan', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'W. G. Sebald', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Joy Fielding', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Ray Bradbury', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Patricia Cornwell', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Rohinton Mistry', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Italo Calvino', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Nicholas Sparks', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Ursula K. Le Guin', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Ken Follett', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Sinclair Ross', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Thomas Mann', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Stephen Hawking', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Roland Barthes', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Noam Chomsky', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Jack Canfield', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Faith Popcorn', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Stephen J. Gould', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'John Searle', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Norman Mailer', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Philip C. McGraw', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Jim Collins', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Richard Dawkins', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Jean Baudrillard', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Michael Moore', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'M. Scott Peck', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Napoleon Hill', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Thomas Kuhn', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Michel Foucault', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Eric Schlosser', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Robert Fulghum', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Robert T. Kiyosaki', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Ernst Mayr', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Bertrand Russell', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Bob Woodward', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Erma Bombeck', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Stephen C. Lundin', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Douglas Rushkoff', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Antonio Damasio', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Pierre Berton', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Jean Vanier', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Peter S. Pande', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Amir D. Aczel', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Daniel Goleman', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Naomi Klein', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Stephen R. Covey', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Kenneth H. Blanchard', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Matt Ridley', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Jeffrey Gray', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Naomi Wolf', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Melody Beattie', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Peter F. Drucker', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'John Maynard Smith', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Joseph LeDoux', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Robert D. Kaplan', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Deepak Chopra', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Barry Z. Posner', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Diane Ackerman', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Oliver Sacks', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Susan Sontag', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Marianne Williamson', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'M. D. Johnson Spencer', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Lauren Adamson', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'John Condry', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Martin Ford', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'James Morgan', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Eric Amsel', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Edward Cornell', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Harold Gardin', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Scott Paris', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Margaritia Azmitia', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Carl Corter', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Frank Gresham', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Richard Passman', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Oscar Barbarin', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Diane Cuneo', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Robert Inness', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'David Perry', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Reuben Baron', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Denise Daniels', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Frank Keil', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Miriam Sexton', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Gary Beauchamp', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Geraldine Dawson', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Reed Larson', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'K Warner Schaie', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Thomas Bever', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Aimee Dorr', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Lynn Liben', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Robert Siegler', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Elliot Blass', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'W Patrick Dickson', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Hugh Lytton', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Mark Strauss', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Dale Blyth', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Robert Emery', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Franklin Manis', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Alister Younger', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Hilda Borko', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Frances Fincham', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Morton Mendelson', options: ARTq, required: true, horizontal: true, },
+        { prompt: 'Steve Yussen', options: ARTq, required: true, horizontal: true, },
+      ],
+      //  CHECK END 
+      randomize_question_order: true,
+      preamble: "<style>.jspsych-survey-multi-choice .jspsych-survey-multi-choice-question { text-align: center; } .jspsych-survey-multi-choice-horizontal { display: flex; justify-content: center; }</style>Below you will see a list of 140 names. Some of the people in the list are popular writers (of books, magazine articles, and/or newspaper columns), and some are not. You are the read the names and put a check mark next to the names of those individuals whom you know to be writers. Do not guess, but only check those whom you know to be writers. Remember, some of the names are people who are not popular writers, so guessing can be easily detected."
+    };
+
+    var MI = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+
+        { prompt: '<b> I tend to imagine the consequences of my behavior that affect others.</b>', options: MIq, required: true, horizontal: true, },
+        { prompt: '<b> I think a lot about any moral problems that I my encounter in the future.</b>', options: MIq, required: true, horizontal: true },
+        { prompt: '<b> It is easy for me to imagine different solutions to important moral problems. </b>', options: MIq, required: true, horizontal: true, },
+        { prompt: '<b> Others come to me for advise on the moral problems they struggle with.</b>', options: MIq, required: true, horizontal: true },
+        { prompt: '<b> When reading fiction, or watching a movie, I often imagine what it is like to be in the shoes of the protagonist(s) and weigh the options that they have. </b>', options: MIq, required: true, horizontal: true },
+        { prompt: '<b> When I am uncertain how to proceed in a morally thorny situation, I first imagine all possible solutions, no matter how outrageous.</b>', options: MIq, required: true, horizontal: true, },
+        { prompt: '<b> When I have to make an important moral decision, I tend to imagine all possible objections against that decision.</b>', options: MIq, required: true, horizontal: true },
+      ],
+
+      randomize_question_order: true,
+      preamble: '<p style="text-align: left;font-size:28px" Show how much you agree with the items below. You can work quickly; your first feeling is generally best'
+    };
+
+    var MP = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+
+        { prompt: ' I believe that lying is necessary to maintain a competitive advantage over others.', options: MPq, required: true, horizontal: true, },
+        { prompt: ' The only good reason to talk to others is to get information that I can use to my benefit.', options: MPq, required: true, horizontal: true },
+        { prompt: ' I am willing to be unethical if I believe it will help me succeed. ', options: MPq, required: true, horizontal: true, },
+        { prompt: ' I am willing to sabotage the efforts of other people if they threaten my own goals.', options: MPq, required: true, horizontal: true },
+        { prompt: ' I would cheat if there was a low chance of getting caught. ', options: MPq, required: true, horizontal: true },
+        { prompt: ' I like to give the orders in interpersonal situations.', options: MPq, required: true, horizontal: true, },
+        { prompt: ' I enjoy having control over other people.', options: MPq, required: true, horizontal: true },
+        { prompt: ' I enjoy being able to control the situation.', options: MPq, required: true, horizontal: true },
+        { prompt: ' Status is a good sign of success in life.', options: MPq, required: true, horizontal: true },
+        { prompt: ' Accumulating wealth is an important goal for me.', options: MPq, required: true, horizontal: true },
+        { prompt: ' I want to be rich and powerful someday.', options: MPq, required: true, horizontal: true },
+        { prompt: ' People are only motivated by personal gain.', options: MPq, required: true, horizontal: true },
+        { prompt: ' I dislike committing to groups because I don’t trust others.', options: MPq, required: true, horizontal: true },
+        { prompt: ' Team members backstab each other all the time to get ahead.', options: MPq, required: true, horizontal: true },
+        { prompt: ' If I show any weakness at work, other people will take advantage of it.', options: MPq, required: true, horizontal: true },
+        { prompt: ' Other people are always planning ways to take advantage of the situation at my expense', options: MPq, required: true, horizontal: true },
+
+      ],
+
+      randomize_question_order: true,
+      preamble: '<p style="text-align: left;font-size:28px" Show how much you agree with the items below. You can work quickly; your first feeling is generally best'
+    };
+
+
+    ////////////////////////////////////////////////////////////////
+    /* define the procedure & order */
+    /* determine which instuctions to show based on the timepressure variable*/
+    if (timepressure == 0) {
+      // tl.push(gen_instructions_NOTIME);
+    }
+
+    if (timepressure == 1) {
+      // tl.push(gen_instructions_TIME);
+    }
+
+    // tl.push(prac_instructions);
+    /* Running the warm-up trials */
+    /* Again depending on timepressure */
+
+    for (var i = 0; i < practice.length; i++) {
+      /* Show a warm-up trial */
+      /* Which type depends on timepressure */
+      if (timepressure == 0) {
+        var display_warmup = {
+          type: jsPsychHtmlKeyboardResponse,
+          prompt: "<p style='text-align:bottom'>Press <b>[f]</b> for possible, press <b>[j]</b> for impossible.</p>",
+          choices: ['f', 'j'],
+          stimulus: practice[i], //jsPsych.timelineVariable("stimulus"),
+          post_trial_gap: 1000,
         }
       }
-  };
-if (typeof jsPsych !== 'undefined' && jsPsych.plugins && jsPsych.plugins.pavlovia) {
-  tl.push(pavlovia_finish);
-} else {
-  console.log('Pavlovia plugin not found — skipping pavlovia finish.');
-}
+      if (timepressure == 1) {
+        var display_warmup = {
+          type: jsPsychHtmlKeyboardResponse,
+          prompt: "<p style='text-align:bottom'>Press <b>[f]</b> for possible, press <b>[j]</b> for impossible.</p>",
+          choices: ['f', 'j'],
+          stimulus: practice[i], //jsPsych.timelineVariable("stimulus"),
+          trial_duration: 1500,
+          post_trial_gap: 1000,
+        }
+      }
+      // tl.push(display_warmup);
+    }
 
-   const save_data = {
-     type: jsPsychPipe,
-     action: "save",
-     experiment_id: "MjWJPUzr6Uic",
-     filename: filename,
+
+    /* tl.push(task_instructions);
+    /* tl.push(read_instructions);
+    /* Looping through all the scenarios */
+    /* Because we are indexing scenarios through shuffled list, the order is randomized */
+
+    for (var i = 0; i < shuffledList.length; i++) {
+      /* Show a random scenario */
+      var display_scenarios = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: scenarios[shuffledList[i]], //jsPsych.timelineVariable("stimulus"),
+        choices: "NO_KEYS",
+        trial_duration: 6500
+      }
+      // tl.push(display_scenarios);
+
+      /*Display the scenario instructions*/
+      // tl.push(scen_instructions)
+
+      /*Looping through the options */
+      /* Because we are indexing the options through shuffled list, the correct options per scenario are displayed */
+      /* Pick a version based on timepressure */
+      if (timepressure == 0) {
+        for (var j = 0; j < options[shuffledList[i]].length; j++) {
+          var display_options = {
+            type: jsPsychHtmlKeyboardResponse,
+            prompt: "<p style='text-align:bottom'>Press <b>[f]</b> for possible, press <b>[j]</b> for impossible.</p>",
+            choices: ['f', 'j'],
+            post_trial_gap: 1200,
+            stimulus: options[shuffledList[i]][j].option,
+            data: { test_part: 'response', correct_response: jsPsych.timelineVariable('correct_response') }
+          };
+          // tl.push(display_options)
+        }
+      }
+      if (timepressure == 1) {
+        for (var j = 0; j < options[shuffledList[i]].length; j++) {
+          var display_options = {
+            type: jsPsychHtmlKeyboardResponse,
+            prompt: "<p style='text-align:bottom'>Press <b>[f]</b> for possible, press <b>[j]</b> for impossible.</p>",
+            choices: ['f', 'j'],
+            trial_duration: 1500,
+            post_trial_gap: 1200,
+            stimulus: options[shuffledList[i]][j].option,
+            data: { test_part: 'response', correct_response: jsPsych.timelineVariable('correct_response') }
+          };
+          // tl.push(display_options)
+        }
+      }
+      /* We probably want to display something in between scenarios to "reset" the block, we can put that here */
+      if (i < shuffledList.length - 1) {
+        tl.push(interim_block)
+      }
+    };
+
+    // tl.push(SRPP);
+    // tl.push(IRI_survey);
+    // tl.push(ART);
+    //tl.push(SDO);
+    // tl.push(IR);
+    // tl.push(MEX);
+    //tl.push(NFC);
+    //tl.push(TA);
+    //tl.push(PT);
+    //tl.push(CC);
+    // tl.push(open_ended_instr);
+    // tl.push(OpenEnded);
+    // tl.push(demo_Age);
+    // tl.push(demo_gen);
+    // tl.push(demo_PolIQ);
+    tl.push(demo_FinalQs);
+
+    ////////////////////////////////////////////////////////////////
+    ///* define debrief */
+
+    // need to get actual sona (leave blank for now; set to a valid URL when ready)
+    var finishURL = "";
+
+    var debrief = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "<p>Thank you for your participation!</p>" +
+        '<div align=left>' +
+        "<p> You have reached the end of this research study conducted by dr. Wylie, Amsterdam Business School, University of Amsterdam (Netherlands) in collaboration with a team of international researchers.</p>" +
+        "<p> Thank you very much for your participation. Your answers are very valuable to us. The purpose of this study was to investigate how your judgments about what is possible or impossible relate to other habits of thought, like your creativity.</p>" +
+        "<p> You may decide that you do not want your data used in this research.  If you would like your data removed from the study and permanently deleted, please contact us via the address listed below. Whether you agree or do not agree to have your data used for this study, you will still receive course credit for your participation.</p>" +
+        "<p> If you would like to receive a copy of the final report of this study (or a summary of the findings) when it is completed, please feel free to contact the researcher(s) at g.g.vanhouwelingen@uva.nl.</p>" +
+        "<p> If you have any questions or concerns regarding this study, its purpose or procedures, or if you have a research-related problem, please feel free to contact the researcher(s) at g.g.vanhouwelingen@uva.nl, or you can send us a message via Prolific. </p>" +
+        "<p> Your identity will remain completely confidential. Because we are interested in the average responses of the entire group of participants, you will not be individually identified; additionally, you will be identified with a meaningless participant ID number only. </p>" +
+        "<p> The data collected from this study will be maintained in a password-protected computer database indefinitely in a restricted access area at University of Amsterdam, to which only the authorized researchers (dr. Gijs van Houwelingen) will have access for at least 7 years. </p>" +
+        "<p> De-identified data related to your participation may be submitted to an open access repository or journal (i.e., the data may be publicly available). " +
+        "<p> These data will be completely de-identified/anonymized prior to submission by removing all personally identifying information (names, email addresses, and certain identifying demographic information) before submission and will be presented in aggregate form in publications. </p>" +
+        "<p> This process is integral to the research process as it allows other researchers to verify results and avoid duplicating research. Other individuals may access these data by accessing the open access repository. Although the dataset without identifiers may be shared publicly, your identity will always remain confidential.</p>" +
+        "<p> This study has been reviewed and received ethics clearance through the Ethics Committee Economics and Business (EBEC), University of Amsterdam, under number EC 20210510030544. If you have questions for the Committee contact them at (31)20-5255311 or at secbs-abs@uva.nl. </p>" +
+        "<p> Finally, we urge you not to discuss this study with anyone else who is currently participating or might participate at a future point in time. As you can certainly appreciate, we will not be able to examine the research question with participants who know the details of the study beforehand. </p>" +
+        '</div><p></p>' +
+        "<p> Please press <b>ANY KEY</b> to continue to the redirect screen. If you are not redirected, you can close out of the window manually after your data has been uploaded.</p>",
+      post_trial_gap: 2000
+    };
+    tl.push(debrief);
+
+    ////////////////////////////////////////////////////////////////
+    /* start the experiment & end pavlovia */
+
+    /* finish connection with pavlovia.org */
+    // var pavlovia_finish = {
+    //   type: "pavlovia",
+    //   command: "finish",
+    //   participantId: surveyCode,
+    //   // Thomas Pronk; your filter function here
+    //   dataFilter: function (data) {
+    //     // Printing the data received from jsPsych.data.get().csv(); a CSV data structure
+    //     console.log(data);
+    //     // You can also access the data directly, for instance getting it as JSON
+    //     console.log(jsPsych.data.get().csv());
+    //     // Return whatever data you'd like to store
+    //     return data;
+    //   },
+    //   // Thomas Pronk; call this function when we're done with the experiment and data reception has been confirmed by Pavlovia
+    //   completedCallback: function () {
+    //     if (finishURL && finishURL.length > 0) {
+    //       window.location.replace(finishURL);
+    //     } else {
+    //       console.log('Pavlovia finished — no finishURL set.');
+    //     }
+    //   }
+    // };
+    // if (typeof jsPsych !== 'undefined' && jsPsych.plugins && jsPsych.plugins.pavlovia) {
+    //   tl.push(pavlovia_finish);
+    // } else {
+    //   console.log('Pavlovia plugin not found — skipping pavlovia finish.');
+    // }
+
+    const save_data = {
+      type: jsPsychPipe,
+      action: "save",
+      experiment_id: "MjWJPUzr6Uic",
+      filename: filename,
       data_string: ()=>jsPsych.data.get().csv()
-      };
+    };
 
-      tl.push(save_data);
 
-jsPsych.init({
-  timeline: tl
-});
+    tl.push(save_data);
+
+
+    jsPsych.run(tl);
 
   </script>
 
