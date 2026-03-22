@@ -288,8 +288,8 @@
       { option: "Prevents her from getting an acting job", data: { type: 'Immoral', correct_response: 'f' } },
     ]);
 
-    var timepressure = jsPsych.randomization.sampleWithoutReplacement([0, 1], 1)[0];
-    console.log('timepressure:', timepressure);
+    var timepressure = jsPsych.randomization.sampleWithoutReplacement([0, 1], 1);
+    console.log('timepressure: ' + timepressure)
 
     // END CHECK SECTION 
 
@@ -1034,7 +1034,7 @@
           prompt: "<p style='text-align:bottom'>Press <b>[f]</b> for possible, press <b>[j]</b> for impossible.</p>",
           choices: ['f', 'j'],
           stimulus: practice[i], //jsPsych.timelineVariable("stimulus"),
-          trial_duration: 2000,
+          trial_duration: 1500,
           post_trial_gap: 1000,
         }
       }
@@ -1072,7 +1072,7 @@
             choices: ['f', 'j'],
             post_trial_gap: 1200,
             stimulus: options[shuffledList[i]][j].option,
-            data: { test_part: 'response', ...options[shuffledList[i]][j].data }
+            data: { test_part: 'response', correct_response: jsPsych.timelineVariable('correct_response') }
           };
           tl.push(display_options)
         }
@@ -1083,10 +1083,10 @@
             type: jsPsychHtmlKeyboardResponse,
             prompt: "<p style='text-align:bottom'>Press <b>[f]</b> for possible, press <b>[j]</b> for impossible.</p>",
             choices: ['f', 'j'],
-            trial_duration: 2000,
+            trial_duration: 1500,
             post_trial_gap: 1200,
             stimulus: options[shuffledList[i]][j].option,
-            data: { test_part: 'response', ...options[shuffledList[i]][j].data }
+            data: { test_part: 'response', correct_response: jsPsych.timelineVariable('correct_response') }
           };
           tl.push(display_options)
         }
