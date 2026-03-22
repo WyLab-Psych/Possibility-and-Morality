@@ -1042,8 +1042,8 @@
     }
 
 
-    /* tl.push(task_instructions);
-    /* tl.push(read_instructions);
+  tl.push(task_instructions);
+  tl.push(read_instructions);
     /* Looping through all the scenarios */
     /* Because we are indexing scenarios through shuffled list, the order is randomized */
 
@@ -1073,7 +1073,7 @@
             stimulus: options[shuffledList[i]][j].option,
             data: { test_part: 'response', correct_response: jsPsych.timelineVariable('correct_response') }
           };
-          // tl.push(display_options)
+          tl.push(display_options)
         }
       }
       if (timepressure == 1) {
@@ -1087,7 +1087,7 @@
             stimulus: options[shuffledList[i]][j].option,
             data: { test_part: 'response', correct_response: jsPsych.timelineVariable('correct_response') }
           };
-          // tl.push(display_options)
+          tl.push(display_options)
         }
       }
       /* We probably want to display something in between scenarios to "reset" the block, we can put that here */
