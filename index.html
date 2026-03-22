@@ -127,7 +127,8 @@
       prompt: "<p><small>Click this button to continue, or close this page to exit.</small></p><p></p>",
       data: { stimulus: 'consentform' },
     };
-    // tl.push(consentform);
+   
+    tl.push(consentform);
 
 
     tl.push({
@@ -1004,14 +1005,14 @@
     /* define the procedure & order */
     /* determine which instuctions to show based on the timepressure variable*/
     if (timepressure == 0) {
-      // tl.push(gen_instructions_NOTIME);
+      tl.push(gen_instructions_NOTIME);
     }
 
     if (timepressure == 1) {
-      // tl.push(gen_instructions_TIME);
+    tl.push(gen_instructions_TIME);
     }
 
-    // tl.push(prac_instructions);
+    tl.push(prac_instructions);
     /* Running the warm-up trials */
     /* Again depending on timepressure */
 
@@ -1037,7 +1038,7 @@
           post_trial_gap: 1000,
         }
       }
-      // tl.push(display_warmup);
+    tl.push(display_warmup);
     }
 
 
@@ -1054,10 +1055,10 @@
         choices: "NO_KEYS",
         trial_duration: 6500
       }
-      // tl.push(display_scenarios);
+      tl.push(display_scenarios);
 
       /*Display the scenario instructions*/
-      // tl.push(scen_instructions)
+      tl.push(scen_instructions)
 
       /*Looping through the options */
       /* Because we are indexing the options through shuffled list, the correct options per scenario are displayed */
@@ -1095,21 +1096,21 @@
       }
     };
 
-    // tl.push(SRPP);
-    // tl.push(IRI_survey);
-    // tl.push(ART);
+    tl.push(SRPP);
+    tl.push(IRI_survey);
+    tl.push(ART);
     //tl.push(SDO);
-    // tl.push(IR);
-    // tl.push(MEX);
+    tl.push(IR);
+    tl.push(MEX);
     //tl.push(NFC);
     //tl.push(TA);
     //tl.push(PT);
     //tl.push(CC);
-    // tl.push(open_ended_instr);
-    // tl.push(OpenEnded);
-    // tl.push(demo_Age);
-    // tl.push(demo_gen);
-    // tl.push(demo_PolIQ);
+    tl.push(open_ended_instr);
+    tl.push(OpenEnded);
+    tl.push(demo_Age);
+    tl.push(demo_gen);
+    tl.push(demo_PolIQ);
     tl.push(demo_FinalQs);
 
     ////////////////////////////////////////////////////////////////
