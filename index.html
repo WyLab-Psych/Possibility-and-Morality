@@ -45,14 +45,29 @@
     });
 
     const subject_id = jsPsych.randomization.randomID(10);
-    const filename = `${subject_id}.csv`;
+
+    function getFirstURLVariable(keys) {
+      for (var i = 0; i < keys.length; i++) {
+        var value = jsPsych.data.getURLVariable(keys[i]);
+        if (value !== undefined && value !== null && String(value).trim() !== '') {
+          return value;
+        }
+      }
+      return null;
+    }
+
+    const prolific_pid = getFirstURLVariable(['PROLIFIC_PID', 'participant', 'prolific_pid']);
+    const study_id = getFirstURLVariable(['STUDY_ID', 'study_id']);
+    const session_id = getFirstURLVariable(['SESSION_ID', 'session_id']);
+
+    const filename = `${prolific_pid ? prolific_pid : subject_id}.csv`;
 
 
     ///last changes made by Charlotte 10 March 
     ///////////////////////////////////////////////////////
     /* create timeline, set up, & link to pavlovia */
 
-    var surveyCode = jsPsych.data.getURLVariable('participant');
+    var surveyCode = prolific_pid;
     if (!surveyCode) {
       surveyCode = 'test'
     }
@@ -306,6 +321,9 @@
     jsPsych.data.addProperties({
       subject: subject_id,
       survey: surveyCode,
+      prolific_pid: prolific_pid,
+      study_id: study_id,
+      session_id: session_id,
       condition: timepressure,
       brwser: browser,
       operatingS: OS,
@@ -423,6 +441,13 @@
     var MIq = ["Completely disagree", "Disagree", " Slightly Disagree ", " Slightly Agree ", "Agree", "Completely agree"];
     var MPq = ["Completely disagree", "Disagree", " Slightly Disagree ", " Slightly Agree ", "Agree", "Completely agree"];
 
+    function setQuestionsRequired(scaleObj) {
+      if (!scaleObj || !Array.isArray(scaleObj.questions)) return;
+      scaleObj.questions = scaleObj.questions.map(function (q) {
+        return { ...q, required: true };
+      });
+    }
+
 
     // Areli CHECK HERE 
     var SRPP = {
@@ -450,6 +475,7 @@
       randomize_question_order: true,
       preamble: "Please rate the extent to which you support (or not support) the policies listed below. You can work quickly; your first feeling is generally best."
     };
+    setQuestionsRequired(SRPP);
     // CHECK END 
 
     var SDO = {
@@ -526,6 +552,7 @@
       randomize_question_order: true,
       preamble: " Show how much you agree with the items below. You can work quickly; your first feeling is generally best"
     };
+    setQuestionsRequired(IR);
 
     // CHECK END 
     var UCC = {
@@ -570,6 +597,7 @@
         '<p><img src="MEX.png" style="width:100%;max-width:400px; display:block; margin: 0 auto;"></p>' +
         '</div>'
     };
+      setQuestionsRequired(MEX);
 
     var OpenEnded = {
       type: jsPsychSurveyText,
@@ -810,6 +838,7 @@
       randomize_question_order: false,
       preamble: '<p style="text-align: left;font-size:28px" Please indicate how well each statement describes you. Use the scale at the top of the page.'
     };
+    setQuestionsRequired(IRI_survey);
 
     var ART = {
       type: jsPsychSurveyMultiChoice,
@@ -959,6 +988,7 @@
       randomize_question_order: true,
       preamble: "<style>.jspsych-survey-multi-choice .jspsych-survey-multi-choice-question { text-align: center; } .jspsych-survey-multi-choice-horizontal { display: flex; justify-content: center; }</style>Below you will see a list of 140 names. Some of the people in the list are popular writers (of books, magazine articles, and/or newspaper columns), and some are not. Read the names and put a check mark next to the names of those individuals whom you know to be writers. Do not guess, but only check those whom you know to be writers. Remember, some of the names are people who are not popular writers, so guessing can be easily detected."
     };
+    setQuestionsRequired(ART);
 
     var MI = {
       type: jsPsychSurveyMultiChoice,
@@ -1101,9 +1131,9 @@
       }
     };
 
-    // tl.push(SRPP);
-    // tl.push(IRI_survey);
-    // tl.push(ART);
+    tl.push(SRPP);
+     tl.push(IRI_survey);
+     tl.push(ART);
     //tl.push(SDO);
     tl.push(IR);
     tl.push(MEX);
@@ -1166,12 +1196,8 @@
     },
     // Thomas Pronk; call this function when we're done with the experiment and data reception has been confirmed by Pavlovia
     completedCallback: function () {
-     if (finishURL && finishURL.length > 0) {
-          window.location.replace(finishURL);
-        } else {
-          console.log('Pavlovia finished — no finishURL set.');
-       }
-      }
+      console.log('Pavlovia finished.');
+    }
      };
     if (typeof jsPsych !== 'undefined' && jsPsych.plugins && jsPsych.plugins.pavlovia) {
        tl.push(pavlovia_finish);
@@ -1189,6 +1215,25 @@
 
 
     tl.push(save_data);
+
+    const redirect_to_prolific = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function () {
+        if (finishURL && finishURL.length > 0) {
+          return '<p>Redirecting you to Prolific...</p><p>If you are not redirected, please use this link: <a href="' + finishURL + '">' + finishURL + '</a></p>';
+        }
+        return '<p>Your responses were submitted.</p><p>No Prolific redirect URL is configured.</p>';
+      },
+      choices: "NO_KEYS",
+      trial_duration: 500,
+      on_start: function () {
+        if (finishURL && finishURL.length > 0) {
+          window.location.replace(finishURL);
+        }
+      }
+    };
+
+    tl.push(redirect_to_prolific);
 
 
     jsPsych.run(tl);
