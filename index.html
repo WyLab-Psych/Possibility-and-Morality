@@ -801,7 +801,6 @@
       randomize_question_order: true,
       preamble: '<p style="text-align: left;font-size:28px" The following statements inquire about your thoughts and feelings in a variety of situations. For each item, indicate how well it describes you by choosing the appropriate letter on the scale at the top of the page: A, B, C, D, or E. When you have decided on your answer, fill in the letter next to the item number. READ EACH ITEM CAREFULLY BEFORE RESPONDING. Answer as honestly as you can. Thank you.'
     };
-    // ARELI CHECK HERE 
     var IRI_survey = {
       type: jsPsychSurveyMultiChoice,
       questions: [
@@ -1039,14 +1038,14 @@
     /* define the procedure & order */
     /* determine which instuctions to show based on the timepressure variable*/
     if (timepressure == 0) {
-     // tl.push(gen_instructions_NOTIME);
+     tl.push(gen_instructions_NOTIME);
     }
 
     if (timepressure == 1) {
-   // tl.push(gen_instructions_TIME);
+   tl.push(gen_instructions_TIME);
     }
 
-   // tl.push(prac_instructions);
+    tl.push(prac_instructions);
     /* Running the warm-up trials */
     /* Again depending on timepressure */
 
@@ -1072,12 +1071,12 @@
           post_trial_gap: 1000,
         }
       }
-  //  tl.push(display_warmup);
+  tl.push(display_warmup);
     }
 
 
-//  tl.push(task_instructions);
-// tl.push(read_instructions);
+tl.push(task_instructions);
+tl.push(read_instructions);
   
     /* Looping through all the scenarios */
     /* Because we are indexing scenarios through shuffled list, the order is randomized */
@@ -1088,12 +1087,12 @@
         type: jsPsychHtmlKeyboardResponse,
         stimulus: scenarios[shuffledList[i]], //jsPsych.timelineVariable("stimulus"),
         choices: "NO_KEYS",
-        trial_duration: 6500
+        trial_duration: 7000
       }
-  //    tl.push(display_scenarios);
+  tl.push(display_scenarios);
 
       /*Display the scenario instructions*/
-   //   tl.push(scen_instructions)
+    tl.push(scen_instructions)
 
       /*Looping through the options */
       /* Because we are indexing the options through shuffled list, the correct options per scenario are displayed */
@@ -1108,7 +1107,7 @@
             stimulus: options[shuffledList[i]][j].option,
             data: { test_part: 'response', ...options[shuffledList[i]][j].data }
           };
-       //   tl.push(display_options)
+       tl.push(display_options);
         }
       }
       if (timepressure == 1) {
@@ -1122,12 +1121,12 @@
             stimulus: options[shuffledList[i]][j].option,
             data: { test_part: 'response', ...options[shuffledList[i]][j].data }
           };
-      //    tl.push(display_options)
+          tl.push(display_options);
         }
       }
       /* We probably want to display something in between scenarios to "reset" the block, we can put that here */
       if (i < shuffledList.length - 1) {
-      //  tl.push(interim_block)
+      tl.push(interim_block)
       }
     };
 
