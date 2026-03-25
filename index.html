@@ -2,6 +2,8 @@
 <html>
 
 <head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title> Moral Imagination </title>
 
   <!-- Load jsPsych, plugins and jQuery from CDNs so the experiment can run locally without local jsPsych folders -->
@@ -474,7 +476,7 @@
         { prompt: 'I find myself daydreaming often', options: GIq, required: true, horizontal: true, },
         { prompt: 'I spend much of my time daydreaming', options: GIq, required: true, horizontal: true },
         { prompt: 'I get lost in my fantasies', options: GIq, required: true, horizontal: true },
-        { prompt: 'I get lost in thoughts that aren’t related to what’s going on around me ', options: GIq, required: true, horizontal: true },
+        { prompt: 'I get lost in thoughts that aren\'t related to what\'s going on around me ', options: GIq, required: true, horizontal: true },
         { prompt: 'Sometimes it is as though I wake up from daydreaming', options: GIq, required: true, horizontal: true },
         { prompt: 'My mind wanders in unpredictable ways', options: GIq, required: true, horizontal: true },
         { prompt: 'I often fantasize about impossible things', options: GIq, required: true, horizontal: true },
@@ -485,7 +487,7 @@
         { prompt: 'My fantasies lead to negative emotions', options: GIq, required: true, horizontal: true },
         { prompt: 'I visualize negative outcomes for the future of the world', options: GIq, required: true, horizontal: true },
         { prompt: 'My daydreams are unpleasant', options: GIq, required: true, horizontal: true },
-        { prompt: 'My fantasies are less detailed than most peoples’ ', options: GIq, required: true, horizontal: true },
+        { prompt: 'My fantasies are less detailed than most peoples\' ', options: GIq, required: true, horizontal: true },
         { prompt: 'Most people seem to have more complex imaginations than me', options: GIq, required: true, horizontal: true },
         { prompt: 'My imaginings are not very complex', options: GIq, required: true, horizontal: true },
         { prompt: 'My fantasies do not involve many details', options: GIq, required: true, horizontal: true },
@@ -510,7 +512,7 @@
         { prompt: ' Reading books where bad things are depicted as morally acceptable makes me feel dirty.', options: IRq, required: true, horizontal: true },
         { prompt: ' I just cant go along with a story when it violates my beliefs about morality.', options: IRq, required: true, horizontal: true },
         { prompt: ' At times it feels like the author of a book is asking me to endorse actions that I know are wrong.', options: IRq, required: true, horizontal: true },
-        { prompt: ' I sometimes cannot go along with a story when the “good” characters do morally reprehensible things.', options: IRq, required: true, horizontal: true },
+        { prompt: ' I sometimes cannot go along with a story when the \"good\" characters do morally reprehensible things.', options: IRq, required: true, horizontal: true },
         { prompt: ' I would be uncomfortable reading a book in which the protagonist thought it was okay to kill people ', options: IRq, required: true, horizontal: true },
         { prompt: ' I really dont buy into stories that are full of werewolves and witches', options: IRq, required: true, horizontal: true },
         { prompt: ' Sympathizing with immoral characters makes me feel immoral myself.', options: IRq, required: true, horizontal: true },
@@ -518,7 +520,7 @@
         { prompt: ' I usually avoid books that have the good guys acting in ways that are morally unacceptable.', options: IRq, required: true, horizontal: true },
         { prompt: ' Being asked to imagine morally repugnant things makes me uncomfortable.', options: IRq, required: true, horizontal: true },
         { prompt: ' I would be uncomfortable reading a story in which the author endorsed torture.', options: IRq, required: true, horizontal: true },
-        { prompt: ' Some things just shouldn’t be done, even within a book', options: IRq, required: true, horizontal: true },
+        { prompt: ' Some things just shouldn\'t be done, even within a book', options: IRq, required: true, horizontal: true },
         { prompt: ' I just cant go along with a story when it violates the rules of physics.', options: IRq, required: true, horizontal: true }
       ],
       randomize_question_order: true,
@@ -551,18 +553,22 @@
         { prompt: '<b> Dolphin</b>', options: MEXq, required: true, horizontal: true },
         { prompt: '<b> Fish</b>', options: MEXq, required: true, horizontal: true, },
         { prompt: '<b> Apple Tree </b>', options: MEXq, required: true, horizontal: true },
-        { prompt: '<b> Family member</b>', options: MEXq, required: true, horizontal: true, },
         { prompt: '<b> Old-growth forest</b>', options: MEXq, required: true, horizontal: true }],
 
       // CHECK END 
       randomize_question_order: true,
-      preamble: "Below please consider the level of moral concern you have for each of the entities." +
-        "We would like you to place them into one of the four boundaries of moral concern. Please read these descriptions carefully before making your decisions." +
-        "Inner circle of moral concern: These entities deserve the highest level of moral concern and standing. You have a moral obligation to ensure their welfare and feel a sense of personal responsibility for their treatment." +
-        "Outer circle of moral concern: These entities deserve moderate moral concern and standing. You concerned about their moral treatment; however, your sense of obligation and personal responsibility is greatly reduced." +
-        "Fringes of moral concern: These entities deserve the minimal moral concern and standing, but you are not moral obligated or personally responsible for their moral treatment." +
-        "Outside the moral boundary: These entities deserve no moral concern or standing, feeling concerned or personal responsibility for their moral treatment is extreme or nonsensical." +
-        '<img src="MEX.png" style="width:400px;"></img>'
+      preamble:
+        '<div style="max-width:900px; line-height:1.5;">' +
+        '<p><strong>Please consider the level of moral concern you have for each entity below.</strong></p>' +
+        '<p>Choose one of the four boundaries of moral concern for each item. Read the descriptions carefully before making your decisions.</p>' +
+        '<ol>' +
+        '<li><strong>Inner circle of moral concern</strong>: These entities deserve the highest level of moral concern and standing. You have a moral obligation to ensure their welfare and feel a sense of personal responsibility for their treatment.</li>' +
+        '<li><strong>Outer circle of moral concern</strong>: These entities deserve moderate moral concern and standing. You are concerned about their moral treatment, but your sense of obligation and personal responsibility is reduced.</li>' +
+        '<li><strong>Fringes of moral concern</strong>: These entities deserve minimal moral concern and standing. You are not morally obligated or personally responsible for their moral treatment.</li>' +
+        '<li><strong>Outside the moral boundary</strong>: These entities deserve no moral concern or standing. Feeling concerned or personally responsible for their moral treatment would be extreme or nonsensical.</li>' +
+        '</ol>' +
+        '<p><img src="MEX.png" style="width:100%;max-width:400px; display:block; margin: 0 auto;"></p>' +
+        '</div>'
     };
 
     var OpenEnded = {
@@ -710,17 +716,17 @@
       type: jsPsychSurveyMultiChoice,
       questions: [
 
-        { prompt: ' I don’t like situations that are uncertain.', options: SNFCq, required: true, horizontal: true, },
+        { prompt: ' I don\'t like situations that are uncertain.', options: SNFCq, required: true, horizontal: true, },
         { prompt: ' I dislike questions which could be answered in many different ways. ', options: SNFCq, required: true, horizontal: true },
         { prompt: ' I find that a well ordered life with regular hours suits my temperament. ', options: SNFCq, required: true, horizontal: true, },
-        { prompt: ' I feel uncomfortable when I don’t understand the reason why an event occurred in my life.', options: SNFCq, required: true, horizontal: true },
+        { prompt: ' I feel uncomfortable when I don\'t understand the reason why an event occurred in my life.', options: SNFCq, required: true, horizontal: true },
         { prompt: ' I feel irritated when one person disagrees with what everyone else in a group believes.', options: SNFCq, required: true, horizontal: true },
-        { prompt: ' I don’t like to go into a situation without knowing what I can expect from it.', options: SNFCq, required: true, horizontal: true, },
+        { prompt: ' I don\'t like to go into a situation without knowing what I can expect from it.', options: SNFCq, required: true, horizontal: true, },
         { prompt: ' When I have made a decision, I feel relieved.', options: SNFCq, required: true, horizontal: true },
-        { prompt: ' When I am confronted with a problem, I’m dying to reach a solution very quickly.', options: SNFCq, required: true, horizontal: true, },
+        { prompt: ' When I am confronted with a problem, I\'m dying to reach a solution very quickly.', options: SNFCq, required: true, horizontal: true, },
         { prompt: ' I would quickly become impatient and irritated if I would not find a solution to a problem immediately.', options: SNFCq, required: true, horizontal: true },
-        { prompt: ' I don’t like to be with people who are capable of unexpected actions', options: SNFCq, required: true, horizontal: true },
-        { prompt: ' I dislike it when a person’s statement could mean many different things.', options: SNFCq, required: true, horizontal: true, },
+        { prompt: ' I don\'t like to be with people who are capable of unexpected actions', options: SNFCq, required: true, horizontal: true },
+        { prompt: ' I dislike it when a person\'s statement could mean many different things.', options: SNFCq, required: true, horizontal: true, },
         { prompt: ' I find that establishing a consistent routine enables me to enjoy life more. ', options: SNFCq, required: true, horizontal: true },
         { prompt: ' I enjoy having a clear and structured mode of life.', options: SNFCq, required: true, horizontal: true, },
         { prompt: ' I do not usually consult many different opinions before forming my own view.', options: SNFCq, required: true, horizontal: true },
@@ -773,29 +779,29 @@
       questions: [
         { prompt: 'I daydream and fantasize, with some regularity, about things that might happen to me', options: IRIq, required: true, horizontal: true, },
         { prompt: 'I often have tender, concerned feelings for people less fortunate than me', options: IRIq, required: true, horizontal: true, },
-        { prompt: 'I sometimes find it difficult to see things from the “other guy’s” point of view', options: IRIq, required: true, horizontal: true, },
-        { prompt: 'Sometimes I don’t feel very sorry for other people when they are having problems', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I sometimes find it difficult to see things from the \"other guy\'s\" point of view', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'Sometimes I don\'t feel very sorry for other people when they are having problems', options: IRIq, required: true, horizontal: true, },
         { prompt: 'I really get involved with the feelings of the characters in a novel', options: IRIq, required: true, horizontal: true, },
         { prompt: 'In emergency situations, I feel apprehensive and ill-at-ease', options: IRIq, required: true, horizontal: true, },
-        { prompt: 'I am usually objective when I watch a movie or play, and I don’t often get completely caught up in it', options: IRIq, required: true, horizontal: true, },
-        { prompt: 'I try to look at everyone’s side of a disagreement before I make a decision', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I am usually objective when I watch a movie or play, and I don\'t often get completely caught up in it', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'I try to look at everyone\'s side of a disagreement before I make a decision', options: IRIq, required: true, horizontal: true, },
         { prompt: 'When I see someone being taken advantage of, I feel kind of protective towards them', options: IRIq, required: true, horizontal: true, },
         { prompt: 'I sometimes feel helpless when I am in the middle of a very emotional situation', options: IRIq, required: true, horizontal: true, },
         { prompt: 'I sometimes try to understand my friends better by imagining how things look from their perspective', options: IRIq, required: true, horizontal: true, },
         { prompt: 'Being extremely involved in a good book or movie is somewhat rare for me', options: IRIq, required: true, horizontal: true, },
         { prompt: 'When I see someone get hurt, I tend to remain calm', options: IRIq, required: true, horizontal: true, },
-        { prompt: 'Other people’s misfortunes do not usually disturb me a great deal', options: IRIq, required: true, horizontal: true, },
-        { prompt: 'If I’m sure I’m right about something, I don’t waste much time listening to other people’s arguments', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'Other people\'s misfortunes do not usually disturb me a great deal', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'If I\'m sure I\'m right about something, I don\'t waste much time listening to other people\'s arguments', options: IRIq, required: true, horizontal: true, },
         { prompt: 'After seeing a play or movie, I have felt as though I were one of the characters', options: IRIq, required: true, horizontal: true, },
         { prompt: 'Being in a tense emotional situation scares me', options: IRIq, required: true, horizontal: true, },
-        { prompt: 'When I see someone being treated unfairly, I sometimes don’t feel very much pity for them', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'When I see someone being treated unfairly, I sometimes don\'t feel very much pity for them', options: IRIq, required: true, horizontal: true, },
         { prompt: 'I am usually pretty effective in dealing with emergencies', options: IRIq, required: true, horizontal: true, },
         { prompt: 'I am often quite touched by things that I see happen', options: IRIq, required: true, horizontal: true, },
         { prompt: 'I believe that there are two sides to every question and try to look at them both', options: IRIq, required: true, horizontal: true, },
         { prompt: 'I would describe myself as a pretty soft-hearted person', options: IRIq, required: true, horizontal: true, },
         { prompt: 'When I watch a good movie, I can very easily put myself in the place of a leading character', options: IRIq, required: true, horizontal: true, },
         { prompt: 'I tend to lose control during emergencies', options: IRIq, required: true, horizontal: true, },
-        { prompt: 'When I’m upset at someone, I usually try to “put myself in his shoes” for a while', options: IRIq, required: true, horizontal: true, },
+        { prompt: 'When I\'m upset at someone, I usually try to \"put myself in his shoes\" for a while', options: IRIq, required: true, horizontal: true, },
         { prompt: 'When I am reading an interesting story or novel, I imagine how I would feel if the events in the story were happening to me', options: IRIq, required: true, horizontal: true, },
         { prompt: 'When I see someone who badly needs help in an emergency, I go to pieces', options: IRIq, required: true, horizontal: true, },
         { prompt: 'Before criticizing somebody, I try to imagine how I would feel if I were in their place', options: IRIq, required: true, horizontal: true, },
@@ -951,7 +957,7 @@
       ],
       //  CHECK END 
       randomize_question_order: true,
-      preamble: "<style>.jspsych-survey-multi-choice .jspsych-survey-multi-choice-question { text-align: center; } .jspsych-survey-multi-choice-horizontal { display: flex; justify-content: center; }</style>Below you will see a list of 140 names. Some of the people in the list are popular writers (of books, magazine articles, and/or newspaper columns), and some are not. You are the read the names and put a check mark next to the names of those individuals whom you know to be writers. Do not guess, but only check those whom you know to be writers. Remember, some of the names are people who are not popular writers, so guessing can be easily detected."
+      preamble: "<style>.jspsych-survey-multi-choice .jspsych-survey-multi-choice-question { text-align: center; } .jspsych-survey-multi-choice-horizontal { display: flex; justify-content: center; }</style>Below you will see a list of 140 names. Some of the people in the list are popular writers (of books, magazine articles, and/or newspaper columns), and some are not. Read the names and put a check mark next to the names of those individuals whom you know to be writers. Do not guess, but only check those whom you know to be writers. Remember, some of the names are people who are not popular writers, so guessing can be easily detected."
     };
 
     var MI = {
@@ -987,7 +993,7 @@
         { prompt: ' Accumulating wealth is an important goal for me.', options: MPq, required: true, horizontal: true },
         { prompt: ' I want to be rich and powerful someday.', options: MPq, required: true, horizontal: true },
         { prompt: ' People are only motivated by personal gain.', options: MPq, required: true, horizontal: true },
-        { prompt: ' I dislike committing to groups because I don’t trust others.', options: MPq, required: true, horizontal: true },
+        { prompt: ' I dislike committing to groups because I don\'t trust others.', options: MPq, required: true, horizontal: true },
         { prompt: ' Team members backstab each other all the time to get ahead.', options: MPq, required: true, horizontal: true },
         { prompt: ' If I show any weakness at work, other people will take advantage of it.', options: MPq, required: true, horizontal: true },
         { prompt: ' Other people are always planning ways to take advantage of the situation at my expense', options: MPq, required: true, horizontal: true },
@@ -1003,14 +1009,14 @@
     /* define the procedure & order */
     /* determine which instuctions to show based on the timepressure variable*/
     if (timepressure == 0) {
-      tl.push(gen_instructions_NOTIME);
+     // tl.push(gen_instructions_NOTIME);
     }
 
     if (timepressure == 1) {
-    tl.push(gen_instructions_TIME);
+   // tl.push(gen_instructions_TIME);
     }
 
-    tl.push(prac_instructions);
+   // tl.push(prac_instructions);
     /* Running the warm-up trials */
     /* Again depending on timepressure */
 
@@ -1036,12 +1042,12 @@
           post_trial_gap: 1000,
         }
       }
-    tl.push(display_warmup);
+  //  tl.push(display_warmup);
     }
 
 
-  tl.push(task_instructions);
-  tl.push(read_instructions);
+//  tl.push(task_instructions);
+// tl.push(read_instructions);
   
     /* Looping through all the scenarios */
     /* Because we are indexing scenarios through shuffled list, the order is randomized */
@@ -1054,10 +1060,10 @@
         choices: "NO_KEYS",
         trial_duration: 6500
       }
-      tl.push(display_scenarios);
+  //    tl.push(display_scenarios);
 
       /*Display the scenario instructions*/
-      tl.push(scen_instructions)
+   //   tl.push(scen_instructions)
 
       /*Looping through the options */
       /* Because we are indexing the options through shuffled list, the correct options per scenario are displayed */
@@ -1072,7 +1078,7 @@
             stimulus: options[shuffledList[i]][j].option,
             data: { test_part: 'response', ...options[shuffledList[i]][j].data }
           };
-          tl.push(display_options)
+       //   tl.push(display_options)
         }
       }
       if (timepressure == 1) {
@@ -1086,18 +1092,18 @@
             stimulus: options[shuffledList[i]][j].option,
             data: { test_part: 'response', ...options[shuffledList[i]][j].data }
           };
-          tl.push(display_options)
+      //    tl.push(display_options)
         }
       }
       /* We probably want to display something in between scenarios to "reset" the block, we can put that here */
       if (i < shuffledList.length - 1) {
-        tl.push(interim_block)
+      //  tl.push(interim_block)
       }
     };
 
-    tl.push(SRPP);
-    tl.push(IRI_survey);
-    tl.push(ART);
+    // tl.push(SRPP);
+    // tl.push(IRI_survey);
+    // tl.push(ART);
     //tl.push(SDO);
     tl.push(IR);
     tl.push(MEX);
@@ -1116,26 +1122,27 @@
     ///* define debrief */
 
     // need to get actual sona (leave blank for now; set to a valid URL when ready)
-    var finishURL = "";
+    var finishURL = "https://app.prolific.com/submissions/complete?cc=C12R5T3E";
 
     var debrief = {
       type: jsPsychHtmlKeyboardResponse,
-      stimulus: "<p>Thank you for your participation!</p>" +
-        '<div align=left>' +
-        "<p> You have reached the end of this research study conducted by dr. Wylie, Amsterdam Business School, University of Amsterdam (Netherlands) in collaboration with a team of international researchers.</p>" +
-        "<p> Thank you very much for your participation. Your answers are very valuable to us. The purpose of this study was to investigate how your judgments about what is possible or impossible relate to other habits of thought, like your creativity.</p>" +
-        "<p> You may decide that you do not want your data used in this research.  If you would like your data removed from the study and permanently deleted, please contact us via the address listed below. Whether you agree or do not agree to have your data used for this study, you will still receive course credit for your participation.</p>" +
-        "<p> If you would like to receive a copy of the final report of this study (or a summary of the findings) when it is completed, please feel free to contact the researcher(s) at g.g.vanhouwelingen@uva.nl.</p>" +
-        "<p> If you have any questions or concerns regarding this study, its purpose or procedures, or if you have a research-related problem, please feel free to contact the researcher(s) at g.g.vanhouwelingen@uva.nl, or you can send us a message via Prolific. </p>" +
-        "<p> Your identity will remain completely confidential. Because we are interested in the average responses of the entire group of participants, you will not be individually identified; additionally, you will be identified with a meaningless participant ID number only. </p>" +
-        "<p> The data collected from this study will be maintained in a password-protected computer database indefinitely in a restricted access area at University of Amsterdam, to which only the authorized researchers (dr. Gijs van Houwelingen) will have access for at least 7 years. </p>" +
-        "<p> De-identified data related to your participation may be submitted to an open access repository or journal (i.e., the data may be publicly available). " +
-        "<p> These data will be completely de-identified/anonymized prior to submission by removing all personally identifying information (names, email addresses, and certain identifying demographic information) before submission and will be presented in aggregate form in publications. </p>" +
-        "<p> This process is integral to the research process as it allows other researchers to verify results and avoid duplicating research. Other individuals may access these data by accessing the open access repository. Although the dataset without identifiers may be shared publicly, your identity will always remain confidential.</p>" +
-        "<p> This study has been reviewed and received ethics clearance through the Ethics Committee Economics and Business (EBEC), University of Amsterdam, under number EC 20210510030544. If you have questions for the Committee contact them at (31)20-5255311 or at secbs-abs@uva.nl. </p>" +
-        "<p> Finally, we urge you not to discuss this study with anyone else who is currently participating or might participate at a future point in time. As you can certainly appreciate, we will not be able to examine the research question with participants who know the details of the study beforehand. </p>" +
-        '</div><p></p>' +
-        "<p> Please press <b>ANY KEY</b> to continue to the redirect screen. If you are not redirected, you can close out of the window manually after your data has been uploaded.</p>",
+      stimulus: '<div align=left>' +
+        '<h2>Debrief Form</h2>' +
+        '<p>Thank you for your participation! Please click the arrow below to be redirected back to Prolific.</p>' +
+        '<h3>What was this study about?</h3>' +
+        '<p>Our research lab is broadly interested in moral psychology—that is, better understanding the ways that moral judgments, moral states, and moral values, alongside other states, influence cognition and perception. Below are some of the specific questions we are currently exploring:</p>' +
+        '<ul>' +
+        '<li>How do moral states compare to emotion states in their influence on perception and memory?</li>' +
+        '<li>Do moral judgments and blame affect cognition and memory?</li>' +
+        '<li>How does moral information influence what we see?</li>' +
+        '</ul>' +
+        '<p>Your participation helps us answer these questions, which in turn has implications for public figures, policy, and law. We are committed to sharing our research findings in ways that are accessible and relevant to the public.</p>' +
+        '<h3>How to contact us:</h3>' +
+        '<p>Feel free to visit our website (<a href="https://www.wy-lab.com/" target="_blank">https://www.wy-lab.com/</a>) to learn more about our research. If you have any concerns or questions about the study you just completed, please reach out to the lab at jordan.wylie@cornell.edu.</p>' +
+        '<h3>To learn more about your rights as a research participant:</h3>' +
+        '<p>If you have any concerns about research-related ethics or harm, or would like to learn more about the ethical constraints under which this study was conducted, please contact the Cornell University Institutional Review Board (IRB) for Human Participants at 607-255-6182 or access their website at <a href="https://researchservices.cornell.edu/offices/IRB" target="_blank">https://researchservices.cornell.edu/offices/IRB</a>.</p>' +
+        '</div>' +
+        '<p> Please press <b>ANY KEY</b> to continue to the redirect screen. If you are not redirected, you can close out of the window manually after your data has been uploaded.</p>',
       post_trial_gap: 2000
     };
     tl.push(debrief);
